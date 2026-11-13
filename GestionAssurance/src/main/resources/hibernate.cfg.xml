@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<hibernate-configuration>
+    <session-factory>
+
+        <property name="hibernate.connection.driver_class">
+            com.mysql.cj.jdbc.Driver
+        </property>
+
+        <property name="hibernate.connection.url">
+            jdbc:mysql://localhost:3306/gestion_assurance?serverTimezone=UTC
+        </property>
+
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password"></property>
+
+        <property name="hibernate.dialect">
+            org.hibernate.dialect.MySQLDialect
+        </property>
+
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <mapping class="com.assurance.model.Client"/>
+        <mapping class="com.assurance.model.Agent"/>
+        <mapping class="com.assurance.model.Administrateur"/>
+        <mapping class="com.assurance.model.TypeAssurance"/>
+        <mapping class="com.assurance.model.Contrat"/>
+        <mapping class="com.assurance.model.Garantie"/>
+        <mapping class="com.assurance.model.Sinistre"/>
+        <mapping class="com.assurance.model.Paiement"/>
+
+    </session-factory>
+</hibernate-configuration>
