@@ -41,35 +41,71 @@ public class Contrat {
     public Contrat() {
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId(){
+    	return id; 
+    }
+    
+    public void setId(Long id) {
+    	this.id = id; 
+    }
 
-    public String getNumeroContrat() { return numeroContrat; }
+    public String getNumeroContrat() { 
+    	return numeroContrat;
+    }
+    
     public void setNumeroContrat(String numeroContrat) {
         this.numeroContrat = numeroContrat;
     }
 
-    public LocalDate getDateDebut() { return dateDebut; }
-    public void setDateDebut(LocalDate dateDebut) { this.dateDebut = dateDebut; }
+    public LocalDate getDateDebut() {
+    	return dateDebut;
+    }
+    public void setDateDebut(LocalDate dateDebut) { 
+    	this.dateDebut = dateDebut; 
+    }
 
-    public LocalDate getDateFin() { return dateFin; }
-    public void setDateFin(LocalDate dateFin) { this.dateFin = dateFin; }
+    public LocalDate getDateFin() { 
+    	return dateFin; 
+    }
+    
+    public void setDateFin(LocalDate dateFin) {
+    	this.dateFin = dateFin;
+    }
 
-    public double getMontant() { return montant; }
-    public void setMontant(double montant) { this.montant = montant; }
+    public double getMontant() { 
+    	return montant;
+    }
+    
+    public void setMontant(double montant) { 
+    	this.montant = montant; 
+    }
 
-    public String getStatut() { return statut; }
-    public void setStatut(String statut) { this.statut = statut; }
+    public String getStatut() { 
+    	return statut; 
+    }
+    public void setStatut(String statut) { 
+    	this.statut = statut;
+    }
 
-    public Client getClient() { return client; }
-    public void setClient(Client client) { this.client = client; }
+    public Client getClient() { 
+    	return client;
+    }
+    public void setClient(Client client) { 
+    	this.client = client; 
+    }
 
-    public TypeAssurance getTypeAssurance() { return typeAssurance; }
+    public TypeAssurance getTypeAssurance() {
+    	return typeAssurance; 
+    }
+    
     public void setTypeAssurance(TypeAssurance typeAssurance) {
         this.typeAssurance = typeAssurance;
     }
 
-    public List<Garantie> getGaranties() { return garanties; }
+    public List<Garantie> getGaranties() {
+    	return garanties; 
+    }
+    
     public void setGaranties(List<Garantie> garanties) {
         this.garanties = garanties;
     }
