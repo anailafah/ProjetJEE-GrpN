@@ -27,30 +27,52 @@ public class Sinistre {
     public Sinistre() {
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() { 
+    	return id; 
+    }
+    
+    public void setId(Long id) { 
+    	this.id = id; 
+    }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+    	return description; 
+    }
+    
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public LocalDate getDateDeclaration() { return dateDeclaration; }
+    public LocalDate getDateDeclaration() { 
+    	return dateDeclaration; 
+    }
+    
     public void setDateDeclaration(LocalDate dateDeclaration) {
         this.dateDeclaration = dateDeclaration;
     }
 
     public String getStatut() { return statut; }
-    public void setStatut(String statut) { this.statut = statut; }
+    public void setStatut(String statut) { 
+    	this.statut = statut; }
 
-    public double getMontantEstime() { return montantEstime; }
+    public double getMontantEstime() { 
+    	return montantEstime;
+    }
     public void setMontantEstime(double montantEstime) {
         this.montantEstime = montantEstime;
     }
 
-    public Contrat getContrat() { return contrat; }
-    public void setContrat(Contrat contrat) { this.contrat = contrat; }
+    public Contrat getContrat() { 
+    	return contrat; 
+    }
+    public void setContrat(Contrat contrat) {
+    	this.contrat = contrat; 
+    }
 
-    public Agent getAgent() { return agent; }
-    public void setAgent(Agent agent) { this.agent = agent; }
+    public Agent getAgent() { 
+    	return agent; 
+    }
+    public void setAgent(Agent agent) { 
+    	this.agent = agent; 
+    }
 }
