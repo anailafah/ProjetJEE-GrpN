@@ -7,12 +7,17 @@
             com.mysql.cj.jdbc.Driver
         </property>
 
-        <property name="hibernate.connection.url">
-            jdbc:mysql://localhost:3306/gestion_assurance?serverTimezone=UTC
+       <property name="hibernate.connection.url">
+   			jdbc:mysql://localhost:3306/gestion_assurance?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Europe/Paris&amp;characterEncoding=UTF-8
+		</property>
+       
+         <property name="hibernate.connection.username">
+            assurance_app
         </property>
 
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.password">
+            JEEgrp_N!1
+        </property>
 
         <property name="hibernate.dialect">
             org.hibernate.dialect.MySQLDialect
@@ -20,16 +25,20 @@
 
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">validate</property>
 
+        <mapping class="com.assurance.model.Utilisateur"/>
         <mapping class="com.assurance.model.Client"/>
         <mapping class="com.assurance.model.Agent"/>
         <mapping class="com.assurance.model.Administrateur"/>
+        
         <mapping class="com.assurance.model.TypeAssurance"/>
         <mapping class="com.assurance.model.Contrat"/>
         <mapping class="com.assurance.model.Garantie"/>
+        
         <mapping class="com.assurance.model.Sinistre"/>
         <mapping class="com.assurance.model.Paiement"/>
+        <mapping class="com.assurance.model.Echeance"/>
 
     </session-factory>
 </hibernate-configuration>

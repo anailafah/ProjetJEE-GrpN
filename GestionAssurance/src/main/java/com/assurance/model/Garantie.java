@@ -1,5 +1,6 @@
 package com.assurance.model;
 
+import java.math.BigDecimal;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,48 +11,66 @@ public class Garantie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String nom;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
-    private double montantCouverture;
+
+    @Column(name = "montant_maximal", precision = 12, scale = 2)
+    private BigDecimal montantCouverture;
+
+    private boolean actif = true;
 
     public Garantie() {
     }
 
-    public Garantie(String nom, String description, double montantCouverture) {
+    public Garantie(String nom, String description, BigDecimal montantCouverture) {
         this.nom = nom;
         this.description = description;
         this.montantCouverture = montantCouverture;
+        this.actif = true;
     }
 
+    // Getters et setters
+
     public Long getId() {
-    	return id; 
+        return id;
     }
-    public void setId(Long id) { 
-    	this.id = id; 
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNom() {
-    	return nom;
+        return nom;
     }
+
     public void setNom(String nom) {
-    	this.nom = nom;
+        this.nom = nom;
     }
 
-    public String getDescription() { 
-    	return description; 
+    public String getDescription() {
+        return description;
     }
-    
+
     public void setDescription(String description) {
-    	this.description = description;
+        this.description = description;
     }
 
-    public double getMontantCouverture() { 
-    	return montantCouverture; 
+    public BigDecimal getMontantCouverture() {
+        return montantCouverture;
     }
-    
-    public void setMontantCouverture(double montantCouverture) {
+
+    public void setMontantCouverture(BigDecimal montantCouverture) {
         this.montantCouverture = montantCouverture;
+    }
+
+    public boolean isActif() {
+        return actif;
+    }
+
+    public void setActif(boolean actif) {
+        this.actif = actif;
     }
 }
