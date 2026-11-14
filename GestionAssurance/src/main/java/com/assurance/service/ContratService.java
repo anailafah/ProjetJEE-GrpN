@@ -23,8 +23,8 @@ public class ContratService {
 
     public void ajouter(Contrat contrat) {
 
-        verifierContrat(contrat);
-
+        verifierContrat(contrat,true);
+        verifierNumeroContrat(contrat.getNumeroContrat(), null);
         contrat.setStatut("ACTIF");
 
         contratDAO.ajouter(contrat);
@@ -55,12 +55,13 @@ public class ContratService {
             throw new IllegalArgumentException("Contrat introuvable.");
         }
 
-        verifierContrat(contrat);
+        verifierContrat(contrat,false);
+        verifierNumeroContrat(contrat.getNumeroContrat(), contrat.getId());
 
         contratDAO.modifier(contrat);
     }
 
-    private void verifierContrat(Contrat contrat) {
+    private void verifierContrat(Contrat contrat,boolean creation) {
 
         if (contrat == null) {
             throw new IllegalArgumentException("Contrat obligatoire.");
@@ -88,8 +89,10 @@ public class ContratService {
             throw new IllegalArgumentException("La date de fin doit être après la date de début.");
         }
 
-        if (contrat.getDateDebut().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La date de début ne peut pas être dans le passé.");
+        if (creation && contrat.getDateDebut().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException(
+                "La date de début ne peut pas être dans le passé."
+            );
         }
 
         BigDecimal montant = contrat.getMontant();
@@ -145,5 +148,42 @@ public class ContratService {
                 );
             }
         }
+    }
+    
+    private void verifierNumeroContrat(String numero, Long idContrat) {
+
+        boolean existe = contratDAO.numeroExiste(numero);
+
+        if (existe) {
+            Contrat contratExistant = contratDAO.trouverParNumero(numero);
+
+            if (contratExistant != null &&
+                !contratExistant.getId().equals(idContrat)) {
+
+                throw new IllegalArgumentException(
+                    "Ce numéro de contrat est déjà utilisé."
+                );
+            }
+        }
+    }
+    public void annuler(Long id) {
+
+        Contrat contrat = contratDAO.trouverParId(id);
+
+        if (contrat == null) {
+            throw new IllegalArgumentException(
+                "Contrat introuvable."
+            );
+        }
+
+        if ("ANNULE".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Ce contrat est déjà annulé."
+            );
+        }
+
+        contrat.setStatut("ANNULE");
+
+        contratDAO.modifier(contrat);
     }
 }
