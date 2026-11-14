@@ -44,10 +44,21 @@ public class ContratDAO {
 	}
  
 
-    public Contrat trouverParId(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Contrat.class, id);
-        }
+	public Contrat trouverParId(Long id) {
+	    try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+	        return session.createQuery(
+	            "SELECT DISTINCT c FROM Contrat c " +
+	            "LEFT JOIN FETCH c.client " +
+	            "LEFT JOIN FETCH c.typeAssurance " +
+	            "LEFT JOIN FETCH c.garanties " +
+	            "WHERE c.id = :id",
+	            Contrat.class
+	        )
+	        .setParameter("id", id)
+	        .uniqueResult();
+	    }
+	
     }
 
     public void modifier(Contrat contrat) {
@@ -89,6 +100,29 @@ public class ContratDAO {
             }
 
             throw new RuntimeException("Erreur lors de la suppression du contrat", e);
+        }
+    }
+    public boolean numeroExiste(String numero) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long nombre = session.createQuery(
+                "SELECT COUNT(c) FROM Contrat c WHERE c.numeroContrat = :numero",
+                Long.class
+            )
+            .setParameter("numero", numero)
+            .uniqueResult();
+
+            return nombre != null && nombre > 0;
+        }
+    }
+    
+    public Contrat trouverParNumero(String numero) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                "FROM Contrat c WHERE c.numeroContrat = :numero",
+                Contrat.class
+            )
+            .setParameter("numero", numero)
+            .uniqueResult();
         }
     }
 }
