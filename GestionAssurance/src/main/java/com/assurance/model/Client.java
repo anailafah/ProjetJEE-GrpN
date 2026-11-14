@@ -9,7 +9,8 @@ public class Client extends Utilisateur {
 
     @Column(length = 255)
     private String adresse;
-
+    
+    @Column(name = "date_naissance")
     private java.time.LocalDate dateNaissance;
 
     public Client() {

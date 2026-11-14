@@ -27,14 +27,15 @@ public abstract class Utilisateur {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "mot_de_passe", nullable = false, length = 255)
     private String motDePasse;
 
     @Column(length = 20)
     private String telephone;
 
+    @Column(name = "date_creation")
     private LocalDateTime dateCreation;
-
+    
     @Column(nullable = false)
     private boolean actif = true;
 

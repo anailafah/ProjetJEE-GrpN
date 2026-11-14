@@ -1,9 +1,11 @@
+
 package com.assurance.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "contrats")
@@ -13,12 +15,17 @@ public class Contrat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "numero_contrat", unique = true, nullable = false)
     private String numeroContrat;
 
+    @Column(name = "date_debut")
     private LocalDate dateDebut;
+
+    @Column(name = "date_fin")
     private LocalDate dateFin;
-    private double montant;
+
+    @Column(precision = 12, scale = 2)
+    private BigDecimal montant;
 
     private String statut;
 
@@ -41,71 +48,74 @@ public class Contrat {
     public Contrat() {
     }
 
-    public Long getId(){
-    	return id; 
-    }
-    
-    public void setId(Long id) {
-    	this.id = id; 
+    public Long getId() {
+        return id;
     }
 
-    public String getNumeroContrat() { 
-    	return numeroContrat;
+    public void setId(Long id) {
+        this.id = id;
     }
-    
+
+    public String getNumeroContrat() {
+        return numeroContrat;
+    }
+
     public void setNumeroContrat(String numeroContrat) {
         this.numeroContrat = numeroContrat;
     }
 
     public LocalDate getDateDebut() {
-    	return dateDebut;
-    }
-    public void setDateDebut(LocalDate dateDebut) { 
-    	this.dateDebut = dateDebut; 
+        return dateDebut;
     }
 
-    public LocalDate getDateFin() { 
-    	return dateFin; 
+    public void setDateDebut(LocalDate dateDebut) {
+        this.dateDebut = dateDebut;
     }
-    
+
+    public LocalDate getDateFin() {
+        return dateFin;
+    }
+
     public void setDateFin(LocalDate dateFin) {
-    	this.dateFin = dateFin;
+        this.dateFin = dateFin;
     }
 
-    public double getMontant() { 
-    	return montant;
-    }
-    
-    public void setMontant(double montant) { 
-    	this.montant = montant; 
+    public BigDecimal getMontant() {
+        return montant;
     }
 
-    public String getStatut() { 
-    	return statut; 
-    }
-    public void setStatut(String statut) { 
-    	this.statut = statut;
+    public void setMontant(BigDecimal montant) {
+        this.montant = montant;
     }
 
-    public Client getClient() { 
-    	return client;
+    public String getStatut() {
+        return statut;
     }
-    public void setClient(Client client) { 
-    	this.client = client; 
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public TypeAssurance getTypeAssurance() {
-    	return typeAssurance; 
+        return typeAssurance;
     }
-    
+
     public void setTypeAssurance(TypeAssurance typeAssurance) {
         this.typeAssurance = typeAssurance;
     }
 
     public List<Garantie> getGaranties() {
-    	return garanties; 
+        return garanties;
     }
-    
+
     public void setGaranties(List<Garantie> garanties) {
         this.garanties = garanties;
     }

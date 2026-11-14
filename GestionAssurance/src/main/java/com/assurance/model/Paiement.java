@@ -1,7 +1,7 @@
 package com.assurance.model;
 
 import java.time.LocalDate;
-
+import java.math.BigDecimal;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,60 +12,80 @@ public class Paiement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double montant;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal montant;
+
+    @Column(name = "date_paiement")
     private LocalDate datePaiement;
+
+    @Column(name = "mode_paiement")
     private String modePaiement;
+
     private String statut;
 
+    @Column(name = "reference_paiement")
+    private String referencePaiement;
+
     @ManyToOne
-    @JoinColumn(name = "contrat_id", nullable = false)
-    private Contrat contrat;
+    @JoinColumn(name = "echeance_id", nullable = false)
+    private Echeance echeance;
 
     public Paiement() {
     }
 
-    public Long getId() { 
-    	return id; 
-    }
-    
-    public void setId(Long id) { 
-    	this.id = id;
+    public Long getId() {
+        return id;
     }
 
-    public double getMontant() { 
-    	return montant;
-    }
-    
-    public void setMontant(double montant) { 
-    	this.montant = montant;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public LocalDate getDatePaiement() { 
-    	return datePaiement; 
+    public BigDecimal getMontant() {
+        return montant;
     }
+
+    public void setMontant(BigDecimal montant) {
+        this.montant = montant;
+    }
+
+    public LocalDate getDatePaiement() {
+        return datePaiement;
+    }
+
     public void setDatePaiement(LocalDate datePaiement) {
         this.datePaiement = datePaiement;
     }
 
     public String getModePaiement() {
-    	return modePaiement; 
+        return modePaiement;
     }
-    
+
     public void setModePaiement(String modePaiement) {
         this.modePaiement = modePaiement;
     }
 
-    public String getStatut(){ 
-    	return statut; 
-    }
-    public void setStatut(String statut) { 
-    	this.statut = statut; 
+    public String getStatut() {
+        return statut;
     }
 
-    public Contrat getContrat() { 
-    	return contrat; 
+    public void setStatut(String statut) {
+        this.statut = statut;
     }
-    public void setContrat(Contrat contrat) { 
-    	this.contrat = contrat; 
+
+    public String getReferencePaiement() {
+        return referencePaiement;
+    }
+
+    public void setReferencePaiement(String referencePaiement) {
+        this.referencePaiement = referencePaiement;
+    }
+
+    public Echeance getEcheance() {
+        return echeance;
+    }
+
+    public void setEcheance(Echeance echeance) {
+        this.echeance = echeance;
     }
 }

@@ -2,6 +2,7 @@ package com.assurance.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "sinistres")
@@ -11,68 +12,102 @@ public class Sinistre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "numero_sinistre", unique = true, nullable = false)
+    private String numeroSinistre;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "date_sinistre")
+    private LocalDate dateSinistre;
+
+    @Column(name = "date_declaration")
     private LocalDate dateDeclaration;
+
     private String statut;
-    private double montantEstime;
+
+    @Column(name = "montant_demande", precision = 12, scale = 2)
+    private BigDecimal montantDemande;
+
+    @Column(name = "montant_indemnisation", precision = 12, scale = 2)
+    private BigDecimal montantIndemnisation;
 
     @ManyToOne
     @JoinColumn(name = "contrat_id", nullable = false)
     private Contrat contrat;
 
-    @ManyToOne
-    @JoinColumn(name = "agent_id")
-    private Agent agent;
-
     public Sinistre() {
     }
 
-    public Long getId() { 
-    	return id; 
+    public Long getId() {
+        return id;
     }
-    
-    public void setId(Long id) { 
-    	this.id = id; 
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNumeroSinistre() {
+        return numeroSinistre;
+    }
+
+    public void setNumeroSinistre(String numeroSinistre) {
+        this.numeroSinistre = numeroSinistre;
     }
 
     public String getDescription() {
-    	return description; 
+        return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public LocalDate getDateDeclaration() { 
-    	return dateDeclaration; 
+    public LocalDate getDateSinistre() {
+        return dateSinistre;
     }
-    
+
+    public void setDateSinistre(LocalDate dateSinistre) {
+        this.dateSinistre = dateSinistre;
+    }
+
+    public LocalDate getDateDeclaration() {
+        return dateDeclaration;
+    }
+
     public void setDateDeclaration(LocalDate dateDeclaration) {
         this.dateDeclaration = dateDeclaration;
     }
 
-    public String getStatut() { return statut; }
-    public void setStatut(String statut) { 
-    	this.statut = statut; }
-
-    public double getMontantEstime() { 
-    	return montantEstime;
-    }
-    public void setMontantEstime(double montantEstime) {
-        this.montantEstime = montantEstime;
+    public String getStatut() {
+        return statut;
     }
 
-    public Contrat getContrat() { 
-    	return contrat; 
+    public void setStatut(String statut) {
+        this.statut = statut;
     }
+
+    public BigDecimal getMontantDemande() {
+        return montantDemande;
+    }
+
+    public void setMontantDemande(BigDecimal montantDemande) {
+        this.montantDemande = montantDemande;
+    }
+
+    public BigDecimal getMontantIndemnisation() {
+        return montantIndemnisation;
+    }
+
+    public void setMontantIndemnisation(BigDecimal montantIndemnisation) {
+        this.montantIndemnisation = montantIndemnisation;
+    }
+
+    public Contrat getContrat() {
+        return contrat;
+    }
+
     public void setContrat(Contrat contrat) {
-    	this.contrat = contrat; 
-    }
-
-    public Agent getAgent() { 
-    	return agent; 
-    }
-    public void setAgent(Agent agent) { 
-    	this.agent = agent; 
+        this.contrat = contrat;
     }
 }
