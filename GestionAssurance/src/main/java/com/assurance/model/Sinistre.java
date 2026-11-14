@@ -2,6 +2,7 @@ package com.assurance.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 @Entity
@@ -22,7 +23,7 @@ public class Sinistre {
     private LocalDate dateSinistre;
 
     @Column(name = "date_declaration")
-    private LocalDate dateDeclaration;
+    private LocalDateTime dateDeclaration;
 
     private String statut;
 
@@ -71,11 +72,11 @@ public class Sinistre {
         this.dateSinistre = dateSinistre;
     }
 
-    public LocalDate getDateDeclaration() {
+    public LocalDateTime getDateDeclaration() {
         return dateDeclaration;
     }
 
-    public void setDateDeclaration(LocalDate dateDeclaration) {
+    public void setDateDeclaration(LocalDateTime dateDeclaration) {
         this.dateDeclaration = dateDeclaration;
     }
 

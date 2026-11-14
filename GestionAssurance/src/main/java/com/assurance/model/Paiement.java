@@ -1,6 +1,6 @@
 package com.assurance.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.math.BigDecimal;
 import jakarta.persistence.*;
 
@@ -16,7 +16,7 @@ public class Paiement {
     private BigDecimal montant;
 
     @Column(name = "date_paiement")
-    private LocalDate datePaiement;
+    private LocalDateTime datePaiement;
 
     @Column(name = "mode_paiement")
     private String modePaiement;
@@ -49,11 +49,11 @@ public class Paiement {
         this.montant = montant;
     }
 
-    public LocalDate getDatePaiement() {
+    public LocalDateTime getDatePaiement() {
         return datePaiement;
     }
 
-    public void setDatePaiement(LocalDate datePaiement) {
+    public void setDatePaiement(LocalDateTime datePaiement) {
         this.datePaiement = datePaiement;
     }
 
