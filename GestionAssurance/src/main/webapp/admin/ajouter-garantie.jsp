@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Ajouter une garantie</title>
+    <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 <body>
 
