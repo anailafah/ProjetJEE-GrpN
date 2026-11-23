@@ -1,4 +1,5 @@
 package com.assurance.util;
+import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,5 +22,12 @@ public class DatabaseConnection {
         }
 
         return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+    public static void fermerPiloteMySQL() {
+        try {
+            AbandonedConnectionCleanupThread.checkedShutdown();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

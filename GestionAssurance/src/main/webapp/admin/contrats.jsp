@@ -6,8 +6,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestion des contrats</title>
+    <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 <body>
+	<div class="retour-dashboard">
+    	<a href="${pageContext.request.contextPath}/admin/dashboard">
+       	 	Retour au tableau de bord
+    	</a>
+	</div>
 
     <h1>Liste des contrats</h1>
     <p>
