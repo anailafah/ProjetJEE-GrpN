@@ -7,14 +7,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestion des types d'assurance</title>
+    <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 
 <body>
+	<div class="retour-dashboard">
+    <a href="${pageContext.request.contextPath}/admin/dashboard">
+        Retour au tableau de bord
+    </a>
+	</div>
 
     <h1>Liste des types d'assurance</h1>
 
     <p>
-        Ajouter un type d'assurance
+    	<a href="ajouter-type-assurance.jsp">Ajouter un type d'assurance</a>
     </p>
 
     <%

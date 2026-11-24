@@ -6,6 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Modifier un type d'assurance</title>
+    <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 
 <body>
