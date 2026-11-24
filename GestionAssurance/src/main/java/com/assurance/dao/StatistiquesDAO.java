@@ -29,7 +29,7 @@ public class StatistiquesDAO {
                 compter(conn, "SELECT COUNT(*) FROM sinistres"));
 
             stats.setSinistresEnAttente(
-                compter(conn, "SELECT COUNT(*) FROM sinistres WHERE statut = 'EN_ATTENTE'"));
+                compter(conn, "SELECT COUNT(*) FROM sinistres WHERE statut IN ('DECLARE', 'EN_ANALYSE')"));
 
             stats.setNombrePaiements(
                 compter(conn, "SELECT COUNT(*) FROM paiements"));
