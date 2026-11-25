@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier un type d'assurance</title>
+    <title>Modifier une garantie</title>
 
     <style>
         * {
@@ -201,68 +201,65 @@
         </div>
 
         <a class="back-link"
-           href="${pageContext.request.contextPath}/admin/types-assurance">
-            Retour aux types d'assurance
+           href="${pageContext.request.contextPath}/admin/garanties">
+            Retour aux garanties
         </a>
     </header>
 
     <main class="container">
 
         <section class="page-heading">
-            <h1>Modifier un type d'assurance</h1>
+            <h1>Modifier une garantie</h1>
             <p>
-                Modifiez les informations du produit d'assurance sélectionné.
+                Modifiez les informations de la garantie sélectionnée.
             </p>
         </section>
 
         <section class="form-card">
 
-            <form action="${pageContext.request.contextPath}/admin/modifier-type-assurance"
+            <form action="${pageContext.request.contextPath}/admin/modifier-garantie"
                   method="post">
 
-                <input type="hidden" name="id" value="${type.id}">
+                <input type="hidden"
+                       name="id"
+                       value="${garantie.id}">
 
                 <div class="form-group">
-                    <label for="nom">Nom du type d'assurance</label>
+                    <label for="nom">Nom de la garantie</label>
+
                     <input type="text"
                            id="nom"
                            name="nom"
-                           value="<c:out value='${type.nom}'/>"
+                           value="<c:out value='${garantie.nom}'/>"
                            maxlength="100"
                            required>
                 </div>
 
                 <div class="form-group">
                     <label for="description">Description</label>
+
                     <textarea id="description"
                               name="description"
-                              rows="4"><c:out value="${type.description}"/></textarea>
+                              rows="4"><c:out value="${garantie.description}"/></textarea>
+
                     <span class="form-help">
-                        Décrivez les caractéristiques de cette assurance.
+                        Décrivez les risques et les situations couverts par cette garantie.
                     </span>
                 </div>
 
                 <div class="form-group">
-                    <label for="dureeMois">Durée en mois</label>
-                    <input type="number"
-                           id="dureeMois"
-                           name="dureeMois"
-                           value="${type.dureeMois}"
-                           min="1"
-                           required>
-                </div>
+                    <label for="montantCouverture">Montant maximal de couverture (€)</label>
 
-                <div class="form-group">
-                    <label for="tarifBase">Tarif de base (€)</label>
                     <input type="number"
-                           id="tarifBase"
-                           name="tarifBase"
-                           value="${type.tarifBase}"
+                           id="montantCouverture"
+                           name="montantCouverture"
+                           value="${garantie.montantCouverture}"
                            min="0.01"
                            step="0.01"
                            required>
+
                     <span class="form-help">
-                        Indiquez le tarif de base de cette assurance en euros.
+                        Indiquez le montant maximal pris en charge par l'assurance.
                     </span>
                 </div>
 
@@ -273,7 +270,7 @@
                     </button>
 
                     <a class="btn-cancel"
-                       href="${pageContext.request.contextPath}/admin/types-assurance">
+                       href="${pageContext.request.contextPath}/admin/garanties">
                         Annuler
                     </a>
 

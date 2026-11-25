@@ -214,11 +214,6 @@
            href="${pageContext.request.contextPath}/admin/dashboard">
             Retour au tableau de bord
         </a>
-
-        <a class="btn-add"
-           href="${pageContext.request.contextPath}/admin/ajouter-contrat">
-            + Créer un contrat
-        </a>
     </div>
 
     <h1>Gestion des contrats</h1>
@@ -245,7 +240,6 @@
                             <th>Date de fin</th>
                             <th>Montant</th>
                             <th>Statut</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
 
@@ -296,28 +290,6 @@
                                     </c:choose>
                                 </td>
 
-                                <td>
-                                    <div class="actions">
-
-                                        <form action="${pageContext.request.contextPath}/admin/modifier-contrat"
-                                              method="get">
-                                            <input type="hidden" name="id" value="${contrat.id}">
-                                            <button type="submit" class="btn btn-edit">
-                                                Modifier
-                                            </button>
-                                        </form>
-
-                                        <form action="${pageContext.request.contextPath}/admin/annuler-contrat"
-                                              method="post"
-                                              onsubmit="return confirm('Voulez-vous vraiment annuler ce contrat ?');">
-                                            <input type="hidden" name="id" value="${contrat.id}">
-                                            <button type="submit" class="btn btn-cancel">
-                                                Annuler
-                                            </button>
-                                        </form>
-
-                                    </div>
-                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>

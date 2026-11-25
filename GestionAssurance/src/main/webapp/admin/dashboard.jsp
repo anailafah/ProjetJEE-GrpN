@@ -1,317 +1,344 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GestionAssurance | Administration</title>
 
-    <title>Administration - GestionAssurance</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6fa;
-            color: #263449;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    color: #26344d;
+}
 
-        .layout {
-            display: flex;
-            min-height: 100vh;
-        }
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
 
-        /* BARRE LATERALE */
-        .sidebar {
-            width: 250px;
-            background: #142d4e;
-            color: white;
-            padding: 28px 18px;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
+/* SIDEBAR */
 
-        .logo {
-            font-size: 21px;
-            font-weight: bold;
-            padding: 0 12px 35px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-        }
+.sidebar {
+    width: 255px;
+    min-height: 100vh;
+    background: #14233f;
+    color: white;
+    padding: 28px 18px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+}
 
-        .logo span {
-            color: #45c3b1;
-        }
+.brand {
+    font-size: 21px;
+    font-weight: 800;
+    padding: 0 12px 38px;
+}
 
-        .menu-title {
-            color: #9eafc4;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 30px 12px 12px;
-        }
+.brand span {
+    color: #75a0ff;
+}
 
-        .menu a {
-            display: block;
-            color: #dce5f0;
-            text-decoration: none;
-            padding: 13px 12px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            font-size: 14px;
-            transition: 0.2s;
-        }
+.menu-title {
+    color: #8998b3;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.4px;
+    padding: 0 12px;
+    margin-bottom: 14px;
+}
 
-        .menu a:hover,
-        .menu a.active {
-            background: #24466e;
-            color: white;
-        }
+.menu a {
+    display: block;
+    padding: 13px 14px;
+    margin-bottom: 6px;
+    border-radius: 9px;
+    color: #bdc8db;
+    text-decoration: none;
+    font-size: 13px;
+    transition: .2s;
+}
 
-        .sidebar-bottom {
-            margin-top: auto;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255,255,255,0.15);
-        }
+.menu a:hover,
+.menu a.active {
+    background: #263d63;
+    color: white;
+}
 
-        .sidebar-bottom a {
-            display: block;
-            color: #ffcccc;
-            text-decoration: none;
-            padding: 12px;
-            font-size: 14px;
-        }
+.menu a.active {
+    border-left: 3px solid #75a0ff;
+}
 
-        /* CONTENU PRINCIPAL */
-        .main-content {
-            flex: 1;
-            min-width: 0;
-        }
+.sidebar-bottom {
+    margin-top: auto;
+    border-top: 1px solid #34445e;
+    padding-top: 18px;
+}
 
-        .topbar {
-            height: 75px;
-            background: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 35px;
-            border-bottom: 1px solid #e8edf3;
-        }
+.logout {
+    color: #ffb1b1 !important;
+}
 
-        .topbar h2 {
-            font-size: 19px;
-            color: #142d4e;
-        }
+/* MAIN */
 
-        .admin-profile {
-            font-size: 14px;
-            color: #526176;
-        }
+.main {
+    margin-left: 255px;
+    width: calc(100% - 255px);
+    padding: 30px 38px;
+}
 
-        .admin-profile strong {
-            color: #142d4e;
-        }
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
 
-        .content {
-            padding: 35px;
-        }
+.topbar h1 {
+    font-size: 25px;
+    color: #14233f;
+}
 
-        .welcome {
-            margin-bottom: 30px;
-        }
+.topbar p {
+    color: #8290a5;
+    font-size: 12px;
+    margin-top: 7px;
+}
 
-        .welcome h1 {
-            font-size: 27px;
-            color: #142d4e;
-            margin-bottom: 9px;
-        }
+.admin-profile {
+    background: white;
+    border: 1px solid #e9edf4;
+    border-radius: 12px;
+    padding: 11px 17px;
+    font-size: 12px;
+    font-weight: bold;
+}
 
-        .welcome p {
-            color: #78869a;
-            font-size: 14px;
-        }
+/* WELCOME */
 
-        /* TITRES */
-        .section-title {
-            font-size: 18px;
-            color: #142d4e;
-            margin-bottom: 18px;
-        }
+.welcome {
+    background: linear-gradient(115deg, #1c3154, #315efb);
+    border-radius: 16px;
+    padding: 27px 30px;
+    color: white;
+    margin-bottom: 28px;
+}
 
-        /* INDICATEURS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 35px;
-        }
+.welcome h2 {
+    font-size: 21px;
+    margin-bottom: 9px;
+}
 
-        .stat-card {
-            background: white;
-            padding: 23px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(25,45,75,0.05);
-            border: 1px solid #edf0f5;
-        }
+.welcome p {
+    font-size: 13px;
+    color: #dce5ff;
+    line-height: 1.6;
+}
 
-        .stat-card p {
-            color: #78869a;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
+/* STATISTICS */
 
-        .stat-card h3 {
-            color: #142d4e;
-            font-size: 27px;
-        }
+.section-title {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 17px;
+    color: #14233f;
+}
 
-        .stat-note {
-            font-size: 12px;
-            color: #9aa5b4;
-            margin-top: 10px;
-        }
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 17px;
+    margin-bottom: 30px;
+}
 
-        .stat-icon {
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 9px;
-            background: #eaf2fc;
-            color: #2864a0;
-            font-size: 18px;
-            margin-bottom: 16px;
-        }
+.stat-card {
+    background: white;
+    border: 1px solid #e9edf4;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 4px 14px rgba(25,45,80,.03);
+}
 
-        /* GRAPHIQUES */
-        .charts-section {
-            margin-bottom: 35px;
-        }
+.stat-label {
+    color: #8290a5;
+    font-size: 12px;
+    margin-bottom: 14px;
+}
 
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px;
-        }
+.stat-value {
+    color: #14233f;
+    font-size: 27px;
+    font-weight: 800;
+}
 
-        .chart-card {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid #edf0f5;
-            box-shadow: 0 3px 12px rgba(25,45,75,0.05);
-            min-width: 0;
-        }
+.stat-description {
+    color: #9aa5b5;
+    font-size: 11px;
+    margin-top: 9px;
+}
 
-        .chart-card h3 {
-            color: #142d4e;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
+/* CHARTS */
 
-        .chart-container {
-            position: relative;
-            height: 280px;
-        }
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
 
-        /* GESTION */
-        .management-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-        }
+.chart-card {
+    background: white;
+    border: 1px solid #e9edf4;
+    border-radius: 14px;
+    padding: 23px;
+    min-width: 0;
+}
 
-        .management-card {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid #edf0f5;
-            box-shadow: 0 3px 12px rgba(25,45,75,0.05);
-            transition: 0.2s;
-        }
+.chart-card h3 {
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #26344d;
+}
 
-        .management-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(25,45,75,0.09);
-        }
+.chart-container {
+    height: 270px;
+    position: relative;
+}
 
-        .management-card h3 {
-            color: #142d4e;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
+.chart-full {
+    grid-column: 1 / -1;
+}
 
-        .management-card p {
-            color: #8490a0;
-            font-size: 13px;
-            line-height: 1.6;
-            min-height: 42px;
-            margin-bottom: 17px;
-        }
+/* MANAGEMENT */
 
-        .management-card a {
-            color: #168f91;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 13px;
-        }
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px;
+    margin-bottom: 30px;
+}
 
-        .management-card a:hover {
-            text-decoration: underline;
-        }
+.management-card {
+    background: white;
+    border: 1px solid #e9edf4;
+    border-radius: 14px;
+    padding: 23px;
+    transition: .2s;
+}
 
-        .footer {
-            text-align: center;
-            padding: 25px;
-            color: #9aa5b4;
-            font-size: 12px;
-        }
+.management-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(25,45,80,.07);
+}
 
-        /* RESPONSIVE */
-        @media (max-width: 1000px) {
-            .stats-grid,
-            .management-grid,
-            .charts-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
+.management-card h3 {
+    font-size: 15px;
+    color: #14233f;
+    margin-bottom: 10px;
+}
 
-        @media (max-width: 650px) {
-            .layout {
-                flex-direction: column;
-            }
+.management-card p {
+    color: #8290a5;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
 
-            .sidebar {
-                width: 100%;
-            }
+.management-card a {
+    display: inline-block;
+    color: #315efb;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+}
 
-            .sidebar-bottom {
-                margin-top: 10px;
-            }
+.management-card a:hover {
+    text-decoration: underline;
+}
 
-            .topbar {
-                padding: 0 18px;
-            }
+.footer {
+    text-align: center;
+    color: #9aa5b5;
+    font-size: 11px;
+    padding: 15px;
+}
 
-            .content {
-                padding: 22px 16px;
-            }
+/* RESPONSIVE */
 
-            .stats-grid,
-            .management-grid,
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+@media(max-width: 1100px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .management-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 750px) {
+    .sidebar {
+        width: 75px;
+        padding: 20px 8px;
+    }
+
+    .brand {
+        font-size: 0;
+        padding: 10px 5px 30px;
+    }
+
+    .brand span {
+        font-size: 20px;
+    }
+
+    .menu-title {
+        display: none;
+    }
+
+    .menu a {
+        font-size: 0;
+        text-align: center;
+        padding: 13px 5px;
+    }
+
+    .main {
+        margin-left: 75px;
+        width: calc(100% - 75px);
+        padding: 20px 14px;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-full {
+        grid-column: auto;
+    }
+
+    .management-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+}
+</style>
 </head>
 
 <body>
@@ -321,16 +348,14 @@
     <!-- MENU LATERAL -->
     <aside class="sidebar">
 
-        <div class="logo">
+        <div class="brand">
             Gestion<span>Assurance</span>
         </div>
 
-        <div class="menu-title">Menu principal</div>
+        <div class="menu-title">ADMINISTRATION</div>
 
         <nav class="menu">
-
-            <a href="${pageContext.request.contextPath}/admin/dashboard"
-               class="active">
+            <a href="${pageContext.request.contextPath}/admin/dashboard" class="active">
                 Tableau de bord
             </a>
 
@@ -338,12 +363,12 @@
                 Utilisateurs
             </a>
 
-            <a href="${pageContext.request.contextPath}/admin/types-assurance">
-                Types d'assurance
+            <a href="${pageContext.request.contextPath}/admin/roles">
+                Rôles
             </a>
 
-            <a href="${pageContext.request.contextPath}/admin/garanties">
-                Garanties
+            <a href="${pageContext.request.contextPath}/admin/types-assurance">
+                Types d'assurance
             </a>
 
             <a href="${pageContext.request.contextPath}/admin/contrats">
@@ -353,355 +378,324 @@
             <a href="${pageContext.request.contextPath}/admin/sinistres">
                 Sinistres
             </a>
-
         </nav>
 
         <div class="sidebar-bottom">
-            <a href="${pageContext.request.contextPath}/logout">
-                Déconnexion
-            </a>
+            <nav class="menu">
+                <a href="${pageContext.request.contextPath}/logout" class="logout">
+                    Déconnexion
+                </a>
+            </nav>
         </div>
 
     </aside>
 
     <!-- CONTENU PRINCIPAL -->
-    <div class="main-content">
+    <main class="main">
 
         <header class="topbar">
-
-            <h2>Tableau de bord</h2>
+            <div>
+                <h1>Tableau de bord</h1>
+                <p>Vue globale de la plateforme GestionAssurance</p>
+            </div>
 
             <div class="admin-profile">
                 Administrateur :
-                <strong>${sessionScope.prenom} ${sessionScope.nom}</strong>
+                <c:out value="${sessionScope.prenom}"/>
+                <c:out value="${sessionScope.nom}"/>
             </div>
-
         </header>
 
-        <main class="content">
+        <!-- ACCUEIL -->
+        <section class="welcome">
+            <h2>Bienvenue dans votre espace d'administration</h2>
+            <p>
+                Gérez les utilisateurs, les rôles et les types d'assurance.
+                Consultez les contrats, les sinistres et les performances globales.
+            </p>
+        </section>
 
-            <!-- BIENVENUE -->
-            <section class="welcome">
+        <!-- INDICATEURS -->
+        <h2 class="section-title">Vue d'ensemble</h2>
 
-                <h1>Bienvenue dans votre espace administrateur</h1>
+        <section class="stats-grid">
 
+            <div class="stat-card">
+                <div class="stat-label">Total des utilisateurs</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.nombreUtilisateurs}" default="0"/>
+                </div>
+                <div class="stat-description">Tous les comptes de la plateforme</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Nombre de clients</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.nombreClients}" default="0"/>
+                </div>
+                <div class="stat-description">Clients enregistrés</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total des contrats</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.nombreContrats}" default="0"/>
+                </div>
+                <div class="stat-description">Contrats enregistrés</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total des sinistres</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.nombreSinistres}" default="0"/>
+                </div>
+                <div class="stat-description">Sinistres déclarés</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Contrats actifs</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.contratsActifs}" default="0"/>
+                </div>
+                <div class="stat-description">Contrats actuellement actifs</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Sinistres en attente</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.sinistresEnAttente}" default="0"/>
+                </div>
+                <div class="stat-description">À vérifier dans les statistiques</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Paiements enregistrés</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.nombrePaiements}" default="0"/>
+                </div>
+                <div class="stat-description">Nombre total de paiements</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Montant total des paiements</div>
+                <div class="stat-value">
+                    <c:out value="${statistiques.montantTotalPaiements}" default="0"/> €
+                </div>
+                <div class="stat-description">Montant cumulé enregistré</div>
+            </div>
+
+        </section>
+
+        <!-- GRAPHIQUES -->
+        <h2 class="section-title">Analyse des performances</h2>
+
+        <section class="charts-grid">
+
+            <div class="chart-card">
+                <h3>Contrats par type d'assurance</h3>
+                <div class="chart-container">
+                    <canvas id="contratsParTypeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Répartition des sinistres par statut</h3>
+                <div class="chart-container">
+                    <canvas id="sinistresParStatutChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card chart-full">
+                <h3>Évolution des contrats</h3>
+                <div class="chart-container">
+                    <canvas id="contratsParMoisChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ACCÈS AUX GESTIONS -->
+        <h2 class="section-title">Gestion de la plateforme</h2>
+
+        <section class="management-grid">
+
+            <div class="management-card">
+                <h3>Gestion des utilisateurs</h3>
                 <p>
-                    Gérez les utilisateurs, les assurances, les contrats
-                    et suivez l'activité de votre application.
+                    Consultez les comptes, ajoutez des utilisateurs,
+                    modifiez leurs informations ou désactivez-les.
                 </p>
+                <a href="${pageContext.request.contextPath}/admin/utilisateurs">
+                    Accéder aux utilisateurs →
+                </a>
+            </div>
 
-            </section>
+            <div class="management-card">
+                <h3>Gestion des rôles</h3>
+                <p>
+                    Consultez et gérez les rôles et les accès
+                    des différents utilisateurs.
+                </p>
+                <a href="${pageContext.request.contextPath}/admin/roles">
+                    Gérer les rôles →
+                </a>
+            </div>
 
-            <!-- INDICATEURS -->
-            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="management-card">
+                <h3>Types d'assurance</h3>
+                <p>
+                    Ajoutez, modifiez ou supprimez les types
+                    d'assurance proposés par la plateforme.
+                </p>
+                <a href="${pageContext.request.contextPath}/admin/types-assurance">
+                    Gérer les types →
+                </a>
+            </div>
 
-            <section class="stats-grid">
+            <div class="management-card">
+                <h3>Consultation des contrats</h3>
+                <p>
+                    Consultez l'ensemble des contrats
+                    enregistrés dans la plateforme.
+                </p>
+                <a href="${pageContext.request.contextPath}/admin/contrats">
+                    Consulter les contrats →
+                </a>
+            </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon">U</div>
-                    <p>Nombre de clients</p>
-                    <h3>${empty statistiques ? '—' : statistiques.nombreClients}</h3>
-                    <div class="stat-note">Clients enregistrés</div>
-                </div>
+            <div class="management-card">
+                <h3>Consultation des sinistres</h3>
+                <p>
+                    Consultez l'ensemble des sinistres
+                    déclarés par les clients.
+                </p>
+                <a href="${pageContext.request.contextPath}/admin/sinistres">
+                    Consulter les sinistres →
+                </a>
+            </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon">C</div>
-                    <p>Nombre de contrats</p>
-                    <h3>${empty statistiques ? '—' : statistiques.nombreContrats}</h3>
-                    <div class="stat-note">Contrats enregistrés</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">A</div>
-                    <p>Contrats actifs</p>
-                    <h3>${empty statistiques ? '—' : statistiques.contratsActifs}</h3>
-                    <div class="stat-note">Contrats actuellement actifs</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">S</div>
-                    <p>Sinistres en attente</p>
-                    <h3>${empty statistiques ? '—' : statistiques.sinistresEnAttente}</h3>
-                    <div class="stat-note">Demandes à traiter</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">P</div>
-                    <p>Nombre de paiements</p>
-                    <h3>${empty statistiques ? '—' : statistiques.nombrePaiements}</h3>
-                    <div class="stat-note">Paiements enregistrés</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">€</div>
-                    <p>Montant total des paiements</p>
-                    <h3>
-                        ${empty statistiques ? '—' : statistiques.montantTotalPaiements}
-                    </h3>
-                    <div class="stat-note">Montant cumulé</div>
-                </div>
-
-            </section>
-
-            <!-- GRAPHIQUES STATISTIQUES -->
-            <section class="charts-section">
-
-                <h2 class="section-title">Statistiques et analyses</h2>
-
-                <div class="charts-grid">
-
-                    <!-- CONTRATS PAR TYPE -->
-                    <div class="chart-card">
-
-                        <h3>Contrats par type d'assurance</h3>
-
-                        <div class="chart-container">
-                            <canvas id="contratsParType"></canvas>
-                        </div>
-
-                        <div id="dataTypes" hidden>
-                            <c:forEach var="item"
-                                       items="${statistiques.contratsParType}">
-                                <span
-                                    data-label="${item.key}"
-                                    data-value="${item.value}">
-                                </span>
-                            </c:forEach>
-                        </div>
-
-                    </div>
-
-                    <!-- EVOLUTION DES CONTRATS -->
-                    <div class="chart-card">
-
-                        <h3>Évolution des contrats (6 derniers mois)</h3>
-
-                        <div class="chart-container">
-                            <canvas id="contratsParMois"></canvas>
-                        </div>
-
-                        <div id="dataMois" hidden>
-                            <c:forEach var="item"
-                                       items="${statistiques.contratsParMois}">
-                                <span
-                                    data-label="${item.key}"
-                                    data-value="${item.value}">
-                                </span>
-                            </c:forEach>
-                        </div>
-
-                    </div>
-
-                    <!-- SINISTRES PAR STATUT -->
-                    <div class="chart-card">
-
-                        <h3>Répartition des sinistres par statut</h3>
-
-                        <div class="chart-container">
-                            <canvas id="sinistresParStatut"></canvas>
-                        </div>
-
-                        <div id="dataSinistres" hidden>
-                            <c:forEach var="item"
-                                       items="${statistiques.sinistresParStatut}">
-                                <span
-                                    data-label="${item.key}"
-                                    data-value="${item.value}">
-                                </span>
-                            </c:forEach>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- GESTION DE L'APPLICATION -->
-            <h2 class="section-title">Gestion de l'application</h2>
-
-            <section class="management-grid">
-
-                <div class="management-card">
-                    <h3>Gestion des utilisateurs</h3>
-                    <p>
-                        Consultez et gérez les comptes clients,
-                        agents et administrateurs.
-                    </p>
-                    <a href="${pageContext.request.contextPath}/admin/utilisateurs">
-                        Accéder à la gestion →
-                    </a>
-                </div>
-
-                <div class="management-card">
-                    <h3>Types d'assurance</h3>
-                    <p>
-                        Gérez les différentes catégories de produits d'assurance.
-                    </p>
-                    <a href="${pageContext.request.contextPath}/admin/types-assurance">
-                        Accéder à la gestion →
-                    </a>
-                </div>
-
-                <div class="management-card">
-                    <h3>Garanties</h3>
-                    <p>
-                        Ajoutez, modifiez et consultez les garanties proposées.
-                    </p>
-                    <a href="${pageContext.request.contextPath}/admin/garanties">
-                        Accéder à la gestion →
-                    </a>
-                </div>
-
-                <div class="management-card">
-                    <h3>Contrats</h3>
-                    <p>
-                        Consultez et suivez les contrats d'assurance enregistrés.
-                    </p>
-                    <a href="${pageContext.request.contextPath}/admin/contrats">
-                        Accéder à la gestion →
-                    </a>
-                </div>
-
-                <div class="management-card">
-                    <h3>Sinistres</h3>
-                    <p>
-                        Consultez les déclarations et suivez leur traitement.
-                    </p>
-                    <a href="${pageContext.request.contextPath}/admin/sinistres">
-                        Accéder à la gestion →
-                    </a>
-                </div>
-
-            </section>
-
-        </main>
+        </section>
 
         <footer class="footer">
-            GestionAssurance — Espace d'administration
+            GestionAssurance — Espace Administrateur
         </footer>
 
-    </div>
+    </main>
 
 </div>
 
-<!-- BIBLIOTHEQUE CHART.JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- DONNÉES DES GRAPHIQUES -->
+<div id="donneesContratsType" style="display:none">
+    <c:forEach var="item" items="${statistiques.contratsParType}">
+        <span data-label="<c:out value='${item.key}'/>"
+              data-value="<c:out value='${item.value}'/>"></span>
+    </c:forEach>
+</div>
+
+<div id="donneesContratsMois" style="display:none">
+    <c:forEach var="item" items="${statistiques.contratsParMois}">
+        <span data-label="<c:out value='${item.key}'/>"
+              data-value="<c:out value='${item.value}'/>"></span>
+    </c:forEach>
+</div>
+
+<div id="donneesSinistresStatut" style="display:none">
+    <c:forEach var="item" items="${statistiques.sinistresParStatut}">
+        <span data-label="<c:out value='${item.key}'/>"
+              data-value="<c:out value='${item.value}'/>"></span>
+    </c:forEach>
+</div>
 
 <script>
+function lireDonnees(id) {
+    const elements = document.querySelectorAll("#" + id + " span");
 
-    // Récupération des données transmises par le DAO
-    function lireDonnees(id) {
+    return {
+        labels: Array.from(elements).map(e => e.dataset.label),
+        valeurs: Array.from(elements).map(e => Number(e.dataset.value))
+    };
+}
 
-        const elements = document.querySelectorAll("#" + id + " span");
+const types = lireDonnees("donneesContratsType");
+const mois = lireDonnees("donneesContratsMois");
+const sinistres = lireDonnees("donneesSinistresStatut");
 
-        return {
-            labels: Array.from(elements).map(e => e.dataset.label),
-            values: Array.from(elements).map(e => Number(e.dataset.value))
-        };
+new Chart(document.getElementById("contratsParTypeChart"), {
+    type: "doughnut",
+    data: {
+        labels: types.labels,
+        datasets: [{
+            data: types.valeurs,
+            backgroundColor: [
+                "#315efb", "#18a999", "#f4b942",
+                "#e76f51", "#8067dc", "#49a6d8"
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: "bottom" }
+        }
     }
+});
 
-    // GRAPHIQUE 1 : CONTRATS PAR TYPE
-    const types = lireDonnees("dataTypes");
-
-    new Chart(document.getElementById("contratsParType"), {
-
-        type: "doughnut",
-
-        data: {
-            labels: types.labels,
-
-            datasets: [{
-                data: types.values,
-                backgroundColor: [
-                    "#2563eb",
-                    "#14b8a6",
-                    "#f59e0b",
-                    "#8b5cf6",
-                    "#ef4444",
-                    "#64748b"
-                ]
-            }]
+new Chart(document.getElementById("sinistresParStatutChart"), {
+    type: "bar",
+    data: {
+        labels: sinistres.labels,
+        datasets: [{
+            label: "Nombre de sinistres",
+            data: sinistres.valeurs,
+            backgroundColor: "#315efb",
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
         },
-
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-
-    });
-
-    // GRAPHIQUE 2 : EVOLUTION DES CONTRATS
-    const mois = lireDonnees("dataMois");
-
-    new Chart(document.getElementById("contratsParMois"), {
-
-        type: "line",
-
-        data: {
-            labels: mois.labels,
-
-            datasets: [{
-                label: "Nombre de contrats",
-                data: mois.values,
-                borderColor: "#2563eb",
-                backgroundColor: "rgba(37, 99, 235, 0.12)",
-                fill: true,
-                tension: 0.35
-            }]
-        },
-
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        precision: 0
-                    }
-                }
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { precision: 0 }
             }
         }
+    }
+});
 
-    });
-
-    // GRAPHIQUE 3 : SINISTRES PAR STATUT
-    const sinistres = lireDonnees("dataSinistres");
-
-    new Chart(document.getElementById("sinistresParStatut"), {
-
-        type: "bar",
-
-        data: {
-            labels: sinistres.labels,
-
-            datasets: [{
-                label: "Nombre de sinistres",
-                data: sinistres.values,
-                backgroundColor: "#14b8a6",
-                borderRadius: 6
-            }]
+new Chart(document.getElementById("contratsParMoisChart"), {
+    type: "line",
+    data: {
+        labels: mois.labels,
+        datasets: [{
+            label: "Nombre de contrats",
+            data: mois.valeurs,
+            borderColor: "#315efb",
+            backgroundColor: "rgba(49,94,251,.12)",
+            fill: true,
+            tension: .35,
+            pointRadius: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
         },
-
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        precision: 0
-                    }
-                }
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { precision: 0 }
             }
         }
-
-    });
-
+    }
+});
 </script>
 
 </body>
-</html>
