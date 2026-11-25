@@ -1,6 +1,10 @@
 package com.assurance.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.DateTimeException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -8,8 +12,10 @@ import org.hibernate.Session;
 import com.assurance.model.Client;
 import com.assurance.model.TypeAssurance;
 import com.assurance.model.Garantie;
+import com.assurance.model.Contrat;
 import com.assurance.service.TypeAssuranceService;
 import com.assurance.service.GarantieService;
+import com.assurance.service.ContratService;
 import com.assurance.util.HibernateUtil;
 
 import jakarta.servlet.ServletException;
@@ -17,29 +23,41 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.DateTimeException;
-import java.util.ArrayList;
-
-import com.assurance.model.Contrat;
-
-@WebServlet("/admin/ajouter-contrat")
+@WebServlet("/agent/ajouter-contrat")
 public class AjouterContratServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private TypeAssuranceService typeService =
-            new TypeAssuranceService();
+    private TypeAssuranceService typeService = new TypeAssuranceService();
+    private GarantieService garantieService = new GarantieService();
+    private ContratService contratService = new ContratService();
 
-    private GarantieService garantieService =
-            new GarantieService();
+    private boolean verifierAgent(HttpServletRequest request,
+                                  HttpServletResponse response)
+            throws IOException {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null ||
+                !"AGENT".equalsIgnoreCase((String) session.getAttribute("role"))) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                    "Accès réservé aux agents.");
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request,
-            HttpServletResponse response)
+                         HttpServletResponse response)
             throws ServletException, IOException {
+
+        if (!verifierAgent(request, response)) {
+            return;
+        }
 
         try (Session session =
                 HibernateUtil.getSessionFactory().openSession()) {
@@ -56,15 +74,18 @@ public class AjouterContratServlet extends HttpServlet {
             request.setAttribute("garanties", garanties);
 
             request.getRequestDispatcher(
-                    "/admin/ajouter-contrat.jsp")
-                    .forward(request, response);
+                    "/agent/ajouter-contrat.jsp").forward(request, response);
         }
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request,
-            HttpServletResponse response)
+                          HttpServletResponse response)
             throws ServletException, IOException {
+
+        if (!verifierAgent(request, response)) {
+            return;
+        }
 
         request.setCharacterEncoding("UTF-8");
 
@@ -124,14 +145,13 @@ public class AjouterContratServlet extends HttpServlet {
                 contrat.setGaranties(garanties);
             }
 
-            new com.assurance.service.ContratService().ajouter(contrat);
+            contratService.ajouter(contrat);
 
             request.getSession().setAttribute(
-                    "messageSucces",
-                    "Contrat créé avec succès !");
+                    "messageSucces", "Contrat créé avec succès !");
 
             response.sendRedirect(
-                    request.getContextPath() + "/admin/contrats");
+                    request.getContextPath() + "/agent/contrats");
 
         } catch (IllegalArgumentException | DateTimeException e) {
 
@@ -139,7 +159,7 @@ public class AjouterContratServlet extends HttpServlet {
                     "messageErreur", e.getMessage());
 
             response.sendRedirect(
-                    request.getContextPath() + "/admin/ajouter-contrat");
+                    request.getContextPath() + "/agent/ajouter-contrat");
         }
     }
 }

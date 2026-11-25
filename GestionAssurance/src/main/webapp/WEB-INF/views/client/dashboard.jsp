@@ -11,7 +11,7 @@
 <body>
 
 <header class="header">
-    <h1>AssurPlus</h1>
+    <h1>GestionAssurance</h1>
     <div>
         <span>Bonjour, ${sessionScope.prenom} ${sessionScope.nom}</span>
         <a href="${pageContext.request.contextPath}/logout">Déconnexion</a>

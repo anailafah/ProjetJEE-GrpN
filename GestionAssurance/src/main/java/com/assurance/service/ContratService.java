@@ -176,13 +176,61 @@ public class ContratService {
             );
         }
 
-        if ("ANNULE".equalsIgnoreCase(contrat.getStatut())) {
+        if ("RESILIE".equalsIgnoreCase(contrat.getStatut())) {
             throw new IllegalArgumentException(
-                "Ce contrat est déjà annulé."
+                "Ce contrat est déjà résilié."
+            );
+        }
+        
+
+        if (!"ACTIF".equalsIgnoreCase(contrat.getStatut())
+                && !"SUSPENDU".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Ce contrat ne peut pas être résilié dans son état actuel."
             );
         }
 
-        contrat.setStatut("ANNULE");
+        contrat.setStatut("RESILIE");
+
+        contratDAO.modifier(contrat);
+    }
+    public void suspendre(Long id) {
+        Contrat contrat = contratDAO.trouverParId(id);
+
+        if (contrat == null) {
+            throw new IllegalArgumentException("Contrat introuvable.");
+        }
+
+        if (!"ACTIF".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Seul un contrat actif peut être suspendu."
+            );
+        }
+
+        contrat.setStatut("SUSPENDU");
+        contratDAO.modifier(contrat);
+    }
+    
+    public void renouveler(Long id) {
+        Contrat contrat = contratDAO.trouverParId(id);
+
+        if (contrat == null) {
+            throw new IllegalArgumentException("Contrat introuvable.");
+        }
+
+        if (!"EXPIRE".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Seul un contrat expiré peut être renouvelé."
+            );
+        }
+
+        java.time.LocalDate nouvelleDateDebut = java.time.LocalDate.now();
+        java.time.LocalDate nouvelleDateFin =
+            contrat.getDateFin().plusYears(1);
+
+        contrat.setDateDebut(nouvelleDateDebut);
+        contrat.setDateFin(nouvelleDateFin);
+        contrat.setStatut("ACTIF");
 
         contratDAO.modifier(contrat);
     }

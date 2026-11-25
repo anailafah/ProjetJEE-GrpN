@@ -256,4 +256,40 @@ public class UtilisateurService {
             throw e;
         }
     }
+    
+    public void changerRole(Long id, String nouveauRole) {
+
+        if (nouveauRole == null) {
+            throw new ServiceException("Veuillez sélectionner un rôle.");
+        }
+
+        String role = nouveauRole.trim().toUpperCase();
+
+        if (!role.equals("CLIENT") && !role.equals("AGENT") && !role.equals("ADMIN")) {
+            throw new ServiceException("Rôle invalide.");
+        }
+
+        Utilisateur utilisateur = chargerOuErreur(id);
+
+        // Éviter de modifier inutilement le rôle
+        if (utilisateur instanceof Administrateur && role.equals("ADMIN")
+                || utilisateur instanceof Agent && role.equals("AGENT")
+                || utilisateur instanceof Client && role.equals("CLIENT")) {
+            throw new ServiceException("Cet utilisateur possède déjà ce rôle.");
+        }
+
+        // Empêcher la suppression du dernier administrateur actif
+        if (utilisateur instanceof Administrateur
+                && utilisateur.isActif()
+                && !role.equals("ADMIN")
+                && dao.compterActifsParType("ADMIN") <= 1) {
+
+            throw new ServiceException(
+                    "Impossible de retirer le rôle du dernier administrateur actif.");
+        }
+
+        if (!dao.modifierRole(id, role)) {
+            throw new ServiceException("Impossible de modifier le rôle.");
+        }
+    }
 }

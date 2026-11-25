@@ -39,6 +39,18 @@ public class UtilisateurDAO {
     public Utilisateur modifier(Utilisateur utilisateur) {
         return enTransaction(session -> session.merge(utilisateur));
     }
+    
+    public boolean modifierRole(Long id, String nouveauRole) {
+        return enTransaction(session -> {
+            int resultat = session.createNativeMutationQuery(
+                    "UPDATE utilisateurs SET type_utilisateur = :role WHERE id = :id")
+                    .setParameter("role", nouveauRole)
+                    .setParameter("id", id)
+                    .executeUpdate();
+
+            return resultat > 0;
+        });
+    }
 
     /** @return true si l'utilisateur existe et a été activé */
     public boolean activer(Long id) {
