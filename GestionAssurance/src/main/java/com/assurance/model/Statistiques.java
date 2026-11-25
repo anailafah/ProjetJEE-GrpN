@@ -1,5 +1,7 @@
 package com.assurance.model;
 
+import java.util.Map;
+
 public class Statistiques {
 
     private int nombreUtilisateurs;
@@ -11,6 +13,11 @@ public class Statistiques {
     private int nombrePaiements;
     private double montantTotalPaiements;
     private int echeancesImpayees;
+
+    // Données des graphiques
+    private Map<String, Integer> contratsParType;
+    private Map<String, Integer> contratsParMois;
+    private Map<String, Integer> sinistresParStatut;
 
     public Statistiques() {
     }
@@ -85,5 +92,29 @@ public class Statistiques {
 
     public void setEcheancesImpayees(int echeancesImpayees) {
         this.echeancesImpayees = echeancesImpayees;
+    }
+
+    public Map<String, Integer> getContratsParType() {
+        return contratsParType;
+    }
+
+    public void setContratsParType(Map<String, Integer> contratsParType) {
+        this.contratsParType = contratsParType;
+    }
+
+    public Map<String, Integer> getContratsParMois() {
+        return contratsParMois;
+    }
+
+    public void setContratsParMois(Map<String, Integer> contratsParMois) {
+        this.contratsParMois = contratsParMois;
+    }
+
+    public Map<String, Integer> getSinistresParStatut() {
+        return sinistresParStatut;
+    }
+
+    public void setSinistresParStatut(Map<String, Integer> sinistresParStatut) {
+        this.sinistresParStatut = sinistresParStatut;
     }
 }
