@@ -3,191 +3,141 @@
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier une garantie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Modifier un type d'assurance</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f6fa;
-            color: #263449;
+            background: #f3f5f9;
+            color: #263247;
         }
 
-        .topbar {
-            background: #142d4e;
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 240px;
+            padding: 28px 18px;
+            background: #17243b;
             color: white;
-            padding: 22px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .logo {
+        .brand {
             font-size: 21px;
             font-weight: bold;
+            margin-bottom: 38px;
         }
 
-        .logo span {
-            color: #45c3b1;
-        }
-
-        .back-link {
-            color: white;
+        .sidebar a {
+            display: block;
+            padding: 13px 14px;
+            margin: 6px 0;
+            color: #dce5f3;
             text-decoration: none;
-            font-size: 14px;
-            padding: 10px 16px;
-            border: 1px solid rgba(255,255,255,0.35);
             border-radius: 7px;
-            transition: 0.2s;
         }
 
-        .back-link:hover {
-            background: #24466e;
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #293b59;
+            color: white;
         }
 
-        .container {
-            max-width: 750px;
-            margin: 45px auto;
-            padding: 0 20px;
+        .main {
+            margin-left: 240px;
+            padding: 35px;
         }
 
-        .page-heading {
+        h1 { margin-top: 0; }
+
+        .subtitle {
+            color: #78849a;
             margin-bottom: 25px;
         }
 
-        .page-heading h1 {
-            font-size: 27px;
-            color: #142d4e;
-            margin-bottom: 9px;
-        }
-
-        .page-heading p {
-            font-size: 14px;
-            color: #8490a0;
-            line-height: 1.5;
-        }
-
-        .form-card {
+        .card {
+            max-width: 750px;
             background: white;
-            padding: 35px;
+            padding: 28px;
             border-radius: 12px;
-            box-shadow: 0 3px 15px rgba(25,45,75,0.06);
-            border: 1px solid #edf0f5;
+            box-shadow: 0 3px 15px rgba(20,35,60,.06);
         }
 
-        .form-group {
-            margin-bottom: 23px;
-        }
+        .form-group { margin-bottom: 20px; }
 
         label {
             display: block;
-            color: #34445b;
-            font-size: 14px;
+            margin-bottom: 8px;
             font-weight: bold;
-            margin-bottom: 9px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #dce2eb;
-            border-radius: 7px;
-            font-family: Arial, sans-serif;
             font-size: 14px;
-            color: #263449;
-            background: white;
-            outline: none;
-            transition: 0.2s;
         }
 
-        input:focus,
-        textarea:focus {
-            border-color: #168f91;
-            box-shadow: 0 0 0 3px rgba(22,143,145,0.10);
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8deea;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         textarea {
-            resize: vertical;
             min-height: 110px;
+            resize: vertical;
         }
 
-        .form-help {
-            display: block;
-            margin-top: 7px;
-            color: #98a2b1;
-            font-size: 12px;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .form-actions {
+        .checkbox-group input { width: auto; }
+        .checkbox-group label { margin: 0; }
+
+        .buttons {
             display: flex;
             gap: 12px;
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
-        .btn-save {
-            flex: 1;
+        .btn {
+            padding: 11px 18px;
             border: none;
-            background: #168f91;
+            border-radius: 6px;
+            background: #315caa;
             color: white;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-save:hover {
-            background: #117779;
-        }
-
-        .btn-cancel {
             text-decoration: none;
-            background: #edf1f6;
-            color: #526176;
-            padding: 14px 20px;
-            border-radius: 8px;
+            cursor: pointer;
             font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            transition: 0.2s;
         }
 
-        .btn-cancel:hover {
-            background: #e0e6ee;
+        .btn:hover { background: #244987; }
+        .btn-secondary { background: #7c8798; }
+
+        .message {
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border-radius: 7px;
+            background: #fde8e8;
+            color: #a52626;
         }
 
-        .footer {
-            text-align: center;
-            color: #9aa5b4;
-            font-size: 12px;
-            padding: 30px;
-        }
+        @media(max-width:800px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+            }
 
-        @media (max-width: 600px) {
-            .topbar {
+            .main {
+                margin-left: 0;
                 padding: 20px;
-                flex-direction: column;
-                gap: 18px;
-                align-items: flex-start;
-            }
-
-            .form-card {
-                padding: 23px;
-            }
-
-            .form-actions {
-                flex-direction: column;
             }
         }
     </style>
@@ -195,96 +145,89 @@
 
 <body>
 
-    <header class="topbar">
-        <div class="logo">
-            Gestion<span>Assurance</span>
+<aside class="sidebar">
+    <div class="brand">GestionAssurance</div>
+
+    <a href="${pageContext.request.contextPath}/admin/dashboard">Tableau de bord</a>
+    <a href="${pageContext.request.contextPath}/admin/utilisateurs">Utilisateurs</a>
+    <a href="${pageContext.request.contextPath}/admin/roles">Gestion des rôles</a>
+    <a class="active" href="${pageContext.request.contextPath}/admin/types-assurance">Types d'assurance</a>
+    <a href="${pageContext.request.contextPath}/admin/contrats">Contrats</a>
+    <a href="${pageContext.request.contextPath}/admin/sinistres">Sinistres</a>
+    <a href="${pageContext.request.contextPath}/statistiques">Statistiques</a>
+    <a href="${pageContext.request.contextPath}/logout">Déconnexion</a>
+</aside>
+
+<main class="main">
+
+    <h1>Modifier un type d'assurance</h1>
+    <p class="subtitle">Modifiez les informations du type d'assurance sélectionné.</p>
+
+    <c:if test="${not empty messageErreur}">
+        <div class="message">
+            <c:out value="${messageErreur}"/>
         </div>
+    </c:if>
 
-        <a class="back-link"
-           href="${pageContext.request.contextPath}/admin/garanties">
-            Retour aux garanties
-        </a>
-    </header>
+    <section class="card">
 
-    <main class="container">
+        <form method="post"
+              action="${pageContext.request.contextPath}/admin/modifier-type-assurance">
 
-        <section class="page-heading">
-            <h1>Modifier une garantie</h1>
-            <p>
-                Modifiez les informations de la garantie sélectionnée.
-            </p>
-        </section>
+            <input type="hidden" name="id" value="${type.id}">
 
-        <section class="form-card">
+            <div class="form-group">
+                <label for="nom">Nom du type d'assurance *</label>
+                <input type="text"
+                       id="nom"
+                       name="nom"
+                       maxlength="100"
+                       value="<c:out value='${type.nom}'/>"
+                       required>
+            </div>
 
-            <form action="${pageContext.request.contextPath}/admin/modifier-garantie"
-                  method="post">
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description"
+                          name="description"><c:out value="${type.description}"/></textarea>
+            </div>
 
-                <input type="hidden"
-                       name="id"
-                       value="${garantie.id}">
+            <div class="form-group">
+                <label for="dureeMois">Durée (en mois) *</label>
+                <input type="number"
+                       id="dureeMois"
+                       name="dureeMois"
+                       min="1"
+                       max="1200"
+                       value="${type.dureeMois}"
+                       required>
+            </div>
 
-                <div class="form-group">
-                    <label for="nom">Nom de la garantie</label>
+            <div class="form-group">
+                <label for="tarifBase">Prix de base (€) *</label>
+                <input type="number"
+                       id="tarifBase"
+                       name="tarifBase"
+                       min="0.01"
+                       step="0.01"
+                       value="${type.tarifBase}"
+                       required>
+            </div>
 
-                    <input type="text"
-                           id="nom"
-                           name="nom"
-                           value="<c:out value='${garantie.nom}'/>"
-                           maxlength="100"
-                           required>
-                </div>
+            <div class="buttons">
+                <button type="submit" class="btn">
+                    Enregistrer les modifications
+                </button>
 
-                <div class="form-group">
-                    <label for="description">Description</label>
+                <a href="${pageContext.request.contextPath}/admin/types-assurance"
+                   class="btn btn-secondary">Annuler</a>
+            </div>
 
-                    <textarea id="description"
-                              name="description"
-                              rows="4"><c:out value="${garantie.description}"/></textarea>
+        </form>
 
-                    <span class="form-help">
-                        Décrivez les risques et les situations couverts par cette garantie.
-                    </span>
-                </div>
+    </section>
 
-                <div class="form-group">
-                    <label for="montantCouverture">Montant maximal de couverture (€)</label>
-
-                    <input type="number"
-                           id="montantCouverture"
-                           name="montantCouverture"
-                           value="${garantie.montantCouverture}"
-                           min="0.01"
-                           step="0.01"
-                           required>
-
-                    <span class="form-help">
-                        Indiquez le montant maximal pris en charge par l'assurance.
-                    </span>
-                </div>
-
-                <div class="form-actions">
-
-                    <button type="submit" class="btn-save">
-                        Enregistrer les modifications
-                    </button>
-
-                    <a class="btn-cancel"
-                       href="${pageContext.request.contextPath}/admin/garanties">
-                        Annuler
-                    </a>
-
-                </div>
-
-            </form>
-
-        </section>
-
-    </main>
-
-    <footer class="footer">
-        GestionAssurance — Administration
-    </footer>
+</main>
 
 </body>
 </html>

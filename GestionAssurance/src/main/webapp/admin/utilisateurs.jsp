@@ -439,8 +439,8 @@ td strong { color: #14233f; }
                                     <td><c:out value="${utilisateur.telephone}"/></td>
 
                                     <td>
-                                        <span class="role role-${utilisateur.typeUtilisateur}">
-                                            <c:out value="${utilisateur.typeUtilisateur}"/>
+                                        <span class="role role-${utilisateur.role}">
+                                            <c:out value="${utilisateur.role}"/>
                                         </span>
                                     </td>
 

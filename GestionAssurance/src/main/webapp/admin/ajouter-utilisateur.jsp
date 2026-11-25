@@ -1,291 +1,273 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un type d'assurance</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajouter un utilisateur | GestionAssurance</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6fa;
-            color: #263449;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    color: #26344d;
+    padding: 35px 15px;
+}
 
-        .topbar {
-            background: #142d4e;
-            color: white;
-            padding: 22px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.container {
+    max-width: 750px;
+    margin: auto;
+    background: white;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(20, 35, 63, .08);
+}
 
-        .logo {
-            font-size: 21px;
-            font-weight: bold;
-        }
+h1 {
+    color: #14233f;
+    margin-bottom: 10px;
+    font-size: 25px;
+}
 
-        .logo span {
-            color: #45c3b1;
-        }
+.subtitle {
+    color: #8290a5;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
 
-        .back-link {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            padding: 10px 16px;
-            border: 1px solid rgba(255,255,255,0.35);
-            border-radius: 7px;
-            transition: 0.2s;
-        }
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
 
-        .back-link:hover {
-            background: #24466e;
-        }
+.form-group {
+    margin-bottom: 18px;
+}
 
-        .container {
-            max-width: 750px;
-            margin: 45px auto;
-            padding: 0 20px;
-        }
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
 
-        .page-heading {
-            margin-bottom: 25px;
-        }
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dce2ed;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
 
-        .page-heading h1 {
-            font-size: 27px;
-            color: #142d4e;
-            margin-bottom: 9px;
-        }
+input:focus, select:focus {
+    border-color: #315efb;
+}
 
-        .page-heading p {
-            font-size: 14px;
-            color: #8490a0;
-            line-height: 1.5;
-        }
+.section-role {
+    display: none;
+    background: #f7f9ff;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px 0 20px;
+}
 
-        .form-card {
-            background: white;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 3px 15px rgba(25,45,75,0.06);
-            border: 1px solid #edf0f5;
-        }
+.section-role h3 {
+    margin-bottom: 18px;
+    color: #315efb;
+    font-size: 15px;
+}
 
-        .form-group {
-            margin-bottom: 23px;
-        }
+.section-role.visible {
+    display: block;
+}
 
-        label {
-            display: block;
-            color: #34445b;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 9px;
-        }
+.error {
+    background: #fff0f0;
+    color: #bd3030;
+    padding: 13px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
 
-        input,
-        textarea {
-            width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #dce2eb;
-            border-radius: 7px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            color: #263449;
-            background: white;
-            outline: none;
-            transition: 0.2s;
-        }
+.buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
 
-        input:focus,
-        textarea:focus {
-            border-color: #168f91;
-            box-shadow: 0 0 0 3px rgba(22,143,145,0.10);
-        }
+button, .btn-retour {
+    padding: 13px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
 
-        textarea {
-            resize: vertical;
-            min-height: 110px;
-        }
+button {
+    background: #315efb;
+    color: white;
+    flex: 1;
+}
 
-        .form-help {
-            display: block;
-            margin-top: 7px;
-            color: #98a2b1;
-            font-size: 12px;
-        }
+button:hover {
+    background: #244bd4;
+}
 
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 30px;
-        }
+.btn-retour {
+    background: #e9edf5;
+    color: #26344d;
+}
 
-        .btn-add {
-            flex: 1;
-            border: none;
-            background: #168f91;
-            color: white;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+@media(max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
 
-        .btn-add:hover {
-            background: #117779;
-        }
-
-        .btn-cancel {
-            text-decoration: none;
-            background: #edf1f6;
-            color: #526176;
-            padding: 14px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            text-align: center;
-            transition: 0.2s;
-        }
-
-        .btn-cancel:hover {
-            background: #e0e6ee;
-        }
-
-        .footer {
-            text-align: center;
-            color: #9aa5b4;
-            font-size: 12px;
-            padding: 30px;
-        }
-
-        @media (max-width: 600px) {
-            .topbar {
-                padding: 20px;
-                flex-direction: column;
-                gap: 18px;
-                align-items: flex-start;
-            }
-
-            .form-card {
-                padding: 23px;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+    .container {
+        padding: 22px;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <header class="topbar">
-        <div class="logo">
-            Gestion<span>Assurance</span>
+<div class="container">
+
+    <h1>Ajouter un utilisateur</h1>
+    <p class="subtitle">
+        Créez un nouveau compte dans la plateforme GestionAssurance.
+    </p>
+
+    <c:if test="${not empty messageErreur}">
+        <div class="error">
+            <c:out value="${messageErreur}"/>
+        </div>
+    </c:if>
+
+    <form method="post"
+          action="${pageContext.request.contextPath}/admin/ajouter-utilisateur">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="nom">Nom *</label>
+                <input type="text" id="nom" name="nom" required maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="prenom">Prénom *</label>
+                <input type="text" id="prenom" name="prenom" required maxlength="100">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Adresse email *</label>
+                <input type="email" id="email" name="email" required maxlength="150">
+            </div>
+
+            <div class="form-group">
+                <label for="telephone">Téléphone</label>
+                <input type="tel" id="telephone" name="telephone" maxlength="20">
+            </div>
+
+            <div class="form-group">
+                <label for="motDePasse">Mot de passe *</label>
+                <input type="password" id="motDePasse"
+                       name="motDePasse" required minlength="8" maxlength="72">
+            </div>
+
+            <div class="form-group">
+                <label for="role">Rôle *</label>
+                <select id="role" name="role" required onchange="afficherChampsRole()">
+                    <option value="CLIENT">Client</option>
+                    <option value="AGENT">Agent</option>
+                    <option value="ADMIN">Administrateur</option>
+                </select>
+            </div>
+
         </div>
 
-        <a class="back-link"
-           href="${pageContext.request.contextPath}/admin/types-assurance">
-            Retour aux types d'assurance
-        </a>
-    </header>
+        <!-- Champs spécifiques au client -->
+        <div id="champsClient" class="section-role visible">
+            <h3>Informations du client</h3>
 
-    <main class="container">
+            <div class="form-group">
+                <label for="adresse">Adresse</label>
+                <input type="text" id="adresse" name="adresse" maxlength="255">
+            </div>
 
-        <section class="page-heading">
-            <h1>Ajouter un type d'assurance</h1>
-            <p>
-                Enregistrez un nouveau produit d'assurance dans votre application.
-            </p>
-        </section>
+            <div class="form-group">
+                <label for="dateNaissance">Date de naissance</label>
+                <input type="date" id="dateNaissance" name="dateNaissance">
+            </div>
+        </div>
 
-        <section class="form-card">
+        <!-- Champs spécifiques à l'agent -->
+        <div id="champsAgent" class="section-role">
+            <h3>Informations de l'agent</h3>
 
-            <form action="${pageContext.request.contextPath}/admin/types-assurance"
-                  method="post">
+            <div class="form-group">
+                <label for="matricule">Matricule *</label>
+                <input type="text" id="matricule" name="matricule" maxlength="50">
+            </div>
 
-                <div class="form-group">
-                    <label for="nom">Nom du type d'assurance</label>
-                    <input type="text"
-                           id="nom"
-                           name="nom"
-                           placeholder="Exemple : Assurance automobile"
-                           maxlength="100"
-                           required>
-                </div>
+            <div class="form-group">
+                <label for="service">Service *</label>
+                <input type="text" id="service" name="service" maxlength="100">
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description"
-                              name="description"
-                              placeholder="Décrivez les caractéristiques de cette assurance..."
-                              required></textarea>
-                </div>
+        <div class="buttons">
+            <a class="btn-retour"
+               href="${pageContext.request.contextPath}/admin/utilisateurs">
+                Retour
+            </a>
 
-                <div class="form-group">
-                    <label for="dureeMois">Durée en mois</label>
-                    <input type="number"
-                           id="dureeMois"
-                           name="dureeMois"
-                           placeholder="Exemple : 12"
-                           min="1"
-                           required>
-                    <span class="form-help">
-                        Indiquez la durée du contrat en mois.
-                    </span>
-                </div>
+            <button type="submit">Créer l'utilisateur</button>
+        </div>
 
-                <div class="form-group">
-                    <label for="tarifBase">Tarif de base (€)</label>
-                    <input type="number"
-                           id="tarifBase"
-                           name="tarifBase"
-                           placeholder="Exemple : 250.00"
-                           min="0.01"
-                           step="0.01"
-                           required>
-                    <span class="form-help">
-                        Indiquez le prix de base en euros.
-                    </span>
-                </div>
+    </form>
 
-                <div class="form-actions">
+</div>
 
-                    <button type="submit" class="btn-add">
-                        Ajouter le type d'assurance
-                    </button>
+<script>
+function afficherChampsRole() {
 
-                    <a class="btn-cancel"
-                       href="${pageContext.request.contextPath}/admin/types-assurance">
-                        Annuler
-                    </a>
+    const role = document.getElementById("role").value;
 
-                </div>
+    const client = document.getElementById("champsClient");
+    const agent = document.getElementById("champsAgent");
+    const admin = document.getElementById("champsAdmin");
 
-            </form>
+    const matricule = document.getElementById("matricule");
+    const service = document.getElementById("service");
 
-        </section>
+    client.classList.toggle("visible", role === "CLIENT");
+    agent.classList.toggle("visible", role === "AGENT");
+    admin.classList.toggle("visible", role === "ADMIN");
 
-    </main>
+    matricule.required = role === "AGENT";
+    service.required = role === "AGENT";
+    niveauAcces.required = role === "ADMIN";
+}
 
-    <footer class="footer">
-        GestionAssurance — Administration
-    </footer>
+afficherChampsRole();
+</script>
 
 </body>
 </html>
