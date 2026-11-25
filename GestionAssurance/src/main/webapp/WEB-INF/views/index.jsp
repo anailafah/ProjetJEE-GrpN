@@ -6,18 +6,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AssurPlus - Accueil</title>
+    <title>GestionAssurance - Accueil</title>
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/accueil.css">
 </head>
 
 <body>
-
     <!-- En-tête -->
     <header class="header">
         <a href="${pageContext.request.contextPath}/accueil"
-           class="logo">ASSUR<span>PLUS</span></a>
+           class="logo">Gestion<span>Assurance</span></a>
 
         <nav class="navigation">
             <a href="${pageContext.request.contextPath}/accueil">Accueil</a>
@@ -25,11 +24,28 @@
             <a href="#apropos">À propos</a>
             <a href="#contact">Contact</a>
         </nav>
-
-		<a href="${pageContext.request.contextPath}/login" class="btn-login">
+        
+        <style>
+    		.btn-principal:hover {
+        	background: #13a99a;}
+		</style>
+        <a href="${pageContext.request.contextPath}/login" class="btn-principal"
+    style="display: inline-block;
+    color: white;
+   	text-decoration: none;
+    padding: 15px 25px;
+    font-weight: bold;
+    transition: 0.3s;">
     		Se connecter
 		</a>
-		<a href="${pageContext.request.contextPath}/inscription" class="btn-register">
+		<a href="${pageContext.request.contextPath}/inscription" class="btn-principal"
+	style="display: inline-block;
+    color: white;
+    text-decoration: none;
+    padding: 15px 25px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: 0.3s;">
     		Créer un compte
 		</a>
     </header>
@@ -39,7 +55,7 @@
 
         <section class="hero">
             <div class="hero-content">
-                <p class="sous-titre">BIENVENUE CHEZ ASSURPLUS</p>
+                <p class="sous-titre">BIENVENUE CHEZ GESTIONASSURANCE</p>
 
                 <h1>Votre protection,<br>
                     <span>notre priorité.</span>
@@ -58,7 +74,7 @@
 
             <div class="hero-decoration">
                 <div class="decoration-card">
-                    <h2>AssurPlus</h2>
+                    <h2>GestionAssurance</h2>
                     <p>La confiance au cœur de nos engagements.</p>
                     <div class="decoration-line"></div>
                     <strong>Votre avenir, notre engagement.</strong>
@@ -121,7 +137,7 @@
                 <h2>Une assurance basée sur la confiance</h2>
 
                 <p>
-                    Chez AssurPlus, nous mettons la satisfaction de nos
+                    Chez GestionAssurance, nous mettons la satisfaction de nos
                     clients au centre de nos priorités.
                     Notre objectif est de proposer des solutions
                     d'assurance simples, accessibles et adaptées à chacun.
@@ -149,12 +165,12 @@
             <div class="contact-info">
                 <div>
                     <h3>Email</h3>
-                    <p>contact@assurplus.fr</p>
+                    <p>contact@gestionassurance.fr</p>
                 </div>
 
                 <div>
                     <h3>Téléphone</h3>
-                    <p>01 00 00 00 00</p>
+                    <p>01 ** ** ** **</p>
                 </div>
             </div>
         </section>
@@ -165,7 +181,7 @@
     <footer class="footer">
         <div class="footer-content">
             <a href="${pageContext.request.contextPath}/accueil"
-               class="logo footer-logo">ASSUR<span>PLUS</span></a>
+               class="logo footer-logo">Gestion<span>Assurance</span></a>
 
             <p>
                 Votre protection, notre priorité.

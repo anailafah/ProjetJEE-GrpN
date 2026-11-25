@@ -1,4 +1,5 @@
 package com.assurance.controller;
+import com.assurance.service.StatistiquesService;
 
 import java.io.IOException;
 
@@ -33,6 +34,9 @@ public class AdminDashboardServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
+        StatistiquesService statistiquesService = new StatistiquesService();
+
+        request.setAttribute("statistiques", statistiquesService.obtenirStatistiques());
 
         request.getRequestDispatcher("/admin/dashboard.jsp")
                .forward(request, response);

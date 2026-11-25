@@ -1,35 +1,288 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="fr">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter une garantie</title>
-    <link rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/admin.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            color: #263449;
+        }
+
+        .topbar {
+            background: #142d4e;
+            color: white;
+            padding: 22px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #45c3b1;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 10px 16px;
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 7px;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            background: #24466e;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 27px;
+            color: #142d4e;
+            margin-bottom: 9px;
+        }
+
+        .page-heading p {
+            font-size: 14px;
+            color: #8490a0;
+            line-height: 1.5;
+        }
+
+        .form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(25,45,75,0.06);
+            border: 1px solid #edf0f5;
+        }
+
+        .form-group {
+            margin-bottom: 23px;
+        }
+
+        label {
+            display: block;
+            color: #34445b;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 9px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce2eb;
+            border-radius: 7px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #263449;
+            background: white;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #168f91;
+            box-shadow: 0 0 0 3px rgba(22,143,145,0.10);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .form-help {
+            display: block;
+            margin-top: 7px;
+            color: #98a2b1;
+            font-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn-add {
+            flex: 1;
+            border: none;
+            background: #168f91;
+            color: white;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-add:hover {
+            background: #117779;
+        }
+
+        .btn-cancel {
+            text-decoration: none;
+            background: #edf1f6;
+            color: #526176;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e6ee;
+        }
+
+        .footer {
+            text-align: center;
+            color: #9aa5b4;
+            font-size: 12px;
+            padding: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 20px;
+                flex-direction: column;
+                gap: 18px;
+                align-items: flex-start;
+            }
+
+            .form-card {
+                padding: 23px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>Ajouter une garantie</h1>
+    <header class="topbar">
+        <div class="logo">
+            Gestion<span>Assurance</span>
+        </div>
 
-    <form action="garanties" method="post">
+        <a class="back-link"
+           href="${pageContext.request.contextPath}/admin/garanties">
+            Retour aux garanties
+        </a>
+    </header>
 
-        <label>Nom :</label>
-        <input type="text" name="nom" required>
-        <br><br>
+    <main class="container">
 
-        <label>Description :</label>
-        <textarea name="description"></textarea>
-        <br><br>
+        <section class="page-heading">
+            <h1>Ajouter une garantie</h1>
+            <p>
+                Enregistrez une nouvelle garantie dans votre application.
+            </p>
+        </section>
 
-        <label>Montant maximal :</label>
-        <input type="number" name="montantCouverture"
-               step="0.01" min="0.01" required>
-        <br><br>
+        <section class="form-card">
 
-        <button type="submit">Ajouter</button>
+            <form action="${pageContext.request.contextPath}/admin/garanties"
+                  method="post">
 
-    </form>
+                <div class="form-group">
+                    <label for="nom">Nom de la garantie</label>
+
+                    <input type="text"
+                           id="nom"
+                           name="nom"
+                           placeholder="Exemple : Garantie vol"
+                           maxlength="100"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+
+                    <textarea id="description"
+                              name="description"
+                              placeholder="Décrivez les risques et les situations couverts par cette garantie..."
+                              required></textarea>
+
+                    <span class="form-help">
+                        Précisez les événements couverts par cette garantie.
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="montantCouverture">
+                        Montant maximal de couverture (€)
+                    </label>
+
+                    <input type="number"
+                           id="montantCouverture"
+                           name="montantCouverture"
+                           placeholder="Exemple : 15000.00"
+                           min="0.01"
+                           step="0.01"
+                           required>
+
+                    <span class="form-help">
+                        Indiquez le montant maximal pris en charge par l'assurance.
+                    </span>
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="submit" class="btn-add">
+                        Ajouter la garantie
+                    </button>
+
+                    <a class="btn-cancel"
+                       href="${pageContext.request.contextPath}/admin/garanties">
+                        Annuler
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        GestionAssurance — Administration
+    </footer>
 
 </body>
 </html>
