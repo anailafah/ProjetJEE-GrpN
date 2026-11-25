@@ -61,6 +61,17 @@ public class GarantieService {
 
         garantieDAO.modifier(garantie);
     }
+    
+    public void supprimer(Long id) {
+
+        Garantie garantie = trouverParId(id);
+
+        if (garantie == null) {
+            throw new IllegalArgumentException("Garantie introuvable.");
+        }
+
+        garantieDAO.supprimer(id);
+    }
 
     private void verifierGarantie(Garantie garantie) {
 

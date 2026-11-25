@@ -9,6 +9,7 @@
 <title>GestionAssurance | Contrats</title>
 
 <style>
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -187,6 +188,41 @@ td strong { color: #14233f; }
     .menu a { font-size: 0; text-align: center; }
     .main { margin-left: 75px; padding: 20px 14px; }
 }
+
+.btn-ajouter {
+        display: inline-block;
+        background: #1769aa;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 20px;
+        transition: 0.3s;
+}
+
+    .btn-ajouter:hover {
+        background: #104d80;
+        transform: translateY(-2px);
+    }
+    
+    .btn-modifier {
+    display: inline-block;
+    padding: 8px 13px;
+    background: #f0a52b;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-modifier:hover {
+    background: #d58b12;
+}
 </style>
 </head>
 
@@ -219,7 +255,11 @@ td strong { color: #14233f; }
     <header class="topbar">
         <div>
             <h1>Gestion des contrats</h1>
-            <p class="subtitle">Consultez les contrats d'assurance des clients.</p>
+            
+        	<a href="${pageContext.request.contextPath}/agent/ajouter-contrat"
+   class="btn-ajouter">
+    + Ajouter un contrat
+</a>
         </div>
 
         <div class="profile">
@@ -239,6 +279,27 @@ td strong { color: #14233f; }
 
     <section class="card">
         <h2>Liste des contrats</h2>
+        <form action="${pageContext.request.contextPath}/agent/contrats"
+      method="get"
+      style="display:flex; gap:10px; margin-bottom:20px;">
+
+    <input type="text"
+           name="recherche"
+           value="${recherche}"
+           placeholder="Rechercher par numéro ou nom du client..."
+           style="flex:1; padding:12px; border:1px solid #ddd; border-radius:7px;">
+
+    <button type="submit"
+            style="background:#1769aa; color:white; padding:12px 20px; border:none; border-radius:7px; cursor:pointer;">
+        Rechercher
+    </button>
+
+    <a href="${pageContext.request.contextPath}/agent/contrats"
+       style="background:#e5e7eb; color:#26344d; padding:12px 20px; border-radius:7px; text-decoration:none;">
+        Réinitialiser
+    </a>
+
+</form>
 
         <div class="table-container">
 
@@ -254,6 +315,7 @@ td strong { color: #14233f; }
                                 <th>Date fin</th>
                                 <th>Montant</th>
                                 <th>Statut</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -274,6 +336,56 @@ td strong { color: #14233f; }
                                             <c:out value="${contrat.statut}"/>
                                         </span>
                                     </td>
+                                    <td>
+    									<a class="btn-modifier"
+       										href="${pageContext.request.contextPath}/agent/modifier-contrat?id=${contrat.id}">
+       										 Modifier
+    									</a>
+
+    								<c:if test="${contrat.statut == 'ACTIF' || contrat.statut == 'SUSPENDU'}">
+        									<form action="${pageContext.request.contextPath}/agent/resilier-contrat"
+              								method="post"
+              										style="display:inline;"
+              								onsubmit="return confirm('Voulez-vous vraiment résilier ce contrat ?');">
+
+            										<input type="hidden" name="id" value="${contrat.id}">
+
+           									 <button type="submit"
+               							     style="background:#dc3545; color:white; padding:8px 13px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+               									 Résilier
+            									</button>
+       											 </form>
+   			 						</c:if>
+   			 						<c:if test="${contrat.statut == 'ACTIF'}">
+    <form action="${pageContext.request.contextPath}/agent/suspendre-contrat"
+          method="post"
+          style="display:inline;"
+          onsubmit="return confirm('Voulez-vous vraiment suspendre ce contrat ?');">
+
+        <input type="hidden" name="id" value="${contrat.id}">
+
+        <button type="submit"
+                style="background:#f0ad4e; color:white; padding:8px 13px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+            Suspendre
+        </button>
+    </form>
+</c:if>
+<c:if test="${contrat.statut == 'EXPIRE'}">
+    <form action="${pageContext.request.contextPath}/agent/renouveler-contrat"
+          method="post"
+          style="display:inline;"
+          onsubmit="return confirm('Voulez-vous vraiment renouveler ce contrat pour un an ?');">
+
+        <input type="hidden" name="id" value="${contrat.id}">
+
+        <button type="submit"
+                style="background:#198754; color:white; padding:8px 13px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+            Renouveler
+        </button>
+    </form>
+</c:if>
+   			 						
+								</td>
                                 </tr>
                             </c:forEach>
                         </tbody>

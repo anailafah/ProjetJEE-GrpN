@@ -1,7 +1,10 @@
 package com.assurance.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.assurance.model.Contrat;
 import com.assurance.service.ContratService;
 
 import jakarta.servlet.ServletException;
@@ -16,31 +19,63 @@ public class AgentContratsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private final ContratService contratService = new ContratService();
+    private ContratService contratService = new ContratService();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("utilisateurId") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        if (session == null ||
+            !"AGENT".equalsIgnoreCase(
+                String.valueOf(session.getAttribute("role")))) {
 
-        String role = (String) session.getAttribute("role");
-
-        if (!"AGENT".equalsIgnoreCase(role)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            response.sendRedirect(
+                request.getContextPath() + "/login");
             return;
         }
 
         try {
-            request.setAttribute("contrats", contratService.lister());
-            request.getRequestDispatcher("/agent/contrats.jsp").forward(request, response);
+            List<Contrat> contrats = contratService.lister();
+
+            String recherche = request.getParameter("recherche");
+
+            if (recherche != null && !recherche.trim().isEmpty()) {
+
+                String motCle = recherche.trim().toLowerCase();
+
+                contrats = contrats.stream()
+                    .filter(contrat ->
+                        (contrat.getNumeroContrat() != null &&
+                         contrat.getNumeroContrat().toLowerCase()
+                             .contains(motCle))
+                        ||
+                        (contrat.getClient() != null &&
+                         ((contrat.getClient().getNom() != null &&
+                           contrat.getClient().getNom().toLowerCase()
+                               .contains(motCle))
+                         ||
+                          (contrat.getClient().getPrenom() != null &&
+                           contrat.getClient().getPrenom().toLowerCase()
+                               .contains(motCle)))
+                        )
+                    )
+                    .collect(Collectors.toList());
+            }
+
+            request.setAttribute("contrats", contrats);
+            request.setAttribute("recherche", recherche);
+
+            request.getRequestDispatcher(
+                "/agent/contrats.jsp"
+            ).forward(request, response);
+
         } catch (Exception e) {
-            throw new ServletException("Erreur lors du chargement des contrats", e);
+
+            throw new ServletException(
+                "Erreur lors du chargement des contrats.", e);
         }
     }
 }

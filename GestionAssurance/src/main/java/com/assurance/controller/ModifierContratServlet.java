@@ -1,4 +1,5 @@
 package com.assurance.controller;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-@WebServlet("/admin/modifier-contrat")
+@WebServlet("/agent/modifier-contrat")
 public class ModifierContratServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -32,12 +33,24 @@ public class ModifierContratServlet extends HttpServlet {
     private ContratService contratService = new ContratService();
     private TypeAssuranceService typeService = new TypeAssuranceService();
     private GarantieService garantieService = new GarantieService();
-
+    
+    private boolean verifierAgent(HttpServletRequest request,HttpServletResponse response)throws IOException {
+    	HttpSession session = request.getSession(false);
+    	if (session == null ||!"AGENT".equalsIgnoreCase(
+    		(String) session.getAttribute("role"))) {
+    		response.sendError(HttpServletResponse.SC_FORBIDDEN);
+    		return false;}
+    	return true;
+}
+    
+    
     @Override
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-
+    	if (!verifierAgent(request, response)) {
+    	    return;
+    	}
         try {
             Long id = Long.parseLong(request.getParameter("id"));
 
@@ -63,7 +76,7 @@ public class ModifierContratServlet extends HttpServlet {
             request.setAttribute("garanties", garantieService.lister());
 
             request.getRequestDispatcher(
-                    "/admin/modifier-contrat.jsp")
+                    "/agent/modifier-contrat.jsp")
                     .forward(request, response);
 
         } catch (NumberFormatException e) {
@@ -74,7 +87,9 @@ public class ModifierContratServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-
+    	if (!verifierAgent(request, response)) {
+    	    return;
+    	}
         request.setCharacterEncoding("UTF-8");
 
         try {
@@ -148,7 +163,7 @@ public class ModifierContratServlet extends HttpServlet {
                     "Contrat modifié avec succès !");
 
             response.sendRedirect(
-                    request.getContextPath() + "/admin/contrats");
+                    request.getContextPath() + "/agent/contrats");
 
         } catch (IllegalArgumentException e) {
 
@@ -156,7 +171,8 @@ public class ModifierContratServlet extends HttpServlet {
                     "messageErreur", e.getMessage());
 
             response.sendRedirect(
-                    request.getContextPath() + "/admin/contrats");
+                    request.getContextPath() + "/agent/contrats");
         }
     }
+    
 }
