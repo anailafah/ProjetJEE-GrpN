@@ -338,8 +338,20 @@
                 Consultez vos paiements, vos échéances
                 et votre historique de règlement.
             </p>
-            <span class="status">À venir</span>
-        </div>
+<a href="${pageContext.request.contextPath}/client/paiements"
+   style="
+   		display:inline-block;
+  		margin-top:15px;
+   		padding:10px 18px;
+   		background:linear-gradient(120deg, #142b4a, #1d5275);
+   		color:white;
+   		text-decoration:none;
+   		border-radius:8px;
+   		font-weight:600;">
+    	Consulter mes paiements
+		</a>       
+		 </div>
+           
 
         <!-- SINISTRES -->
         <div class="card">
