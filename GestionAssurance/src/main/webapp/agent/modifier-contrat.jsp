@@ -149,7 +149,7 @@
 
 <div style="margin: 10px 0 20px 0;">
 
-    "/home/cytech/eclipseJEE/TP5ex2"<c:forEach var="garantie" items="${garanties}">
+    <c:forEach var="garantie" items="${garanties}">
         <c:if test="${garantie.actif}">
             <label style="display:block; margin-bottom:10px;">
 

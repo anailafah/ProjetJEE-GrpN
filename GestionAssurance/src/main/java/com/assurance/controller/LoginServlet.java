@@ -1,13 +1,13 @@
 package com.assurance.controller;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
-import org.mindrot.jbcrypt.BCrypt;
-
-import com.assurance.util.DatabaseConnection;
+import com.assurance.model.Administrateur;
+import com.assurance.model.Agent;
+import com.assurance.model.Client;
+import com.assurance.model.Utilisateur;
+import com.assurance.service.ServiceException;
+import com.assurance.service.UtilisateurService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,14 +16,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * Connexion : la vérification (email, mot de passe BCrypt, compte actif) est faite par
+ * UtilisateurService.authentifier. Ce servlet crée seulement la session et redirige selon le rôle.
+ *
+ * Attributs de session (lus par les dashboards) : utilisateurId, nom, prenom, email, role.
+ */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
+    private final UtilisateurService service = new UtilisateurService();
+
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.getRequestDispatcher("/WEB-INF/views/login.jsp")
@@ -31,8 +38,7 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
@@ -40,101 +46,59 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String motDePasse = request.getParameter("motDePasse");
 
-        if (email == null || motDePasse == null
-                || email.isBlank() || motDePasse.isBlank()) {
+        try {
+            Utilisateur utilisateur = service.authentifier(email, motDePasse);
+            String role = roleDe(utilisateur);
 
-            request.setAttribute("erreur", "Veuillez remplir tous les champs.");
-            doGet(request, response);
-            return;
-        }
+            // Nouvelle session après connexion (protège contre la fixation de session)
+            HttpSession ancienneSession = request.getSession(false);
+            if (ancienneSession != null) {
+                ancienneSession.invalidate();
+            }
+            HttpSession session = request.getSession(true);
 
-        String sql = "SELECT id, nom, prenom, email, mot_de_passe, "
-                   + "type_utilisateur, actif "
-                   + "FROM utilisateurs WHERE email = ?";
+            session.setAttribute("utilisateurId", utilisateur.getId());
+            session.setAttribute("nom", utilisateur.getNom());
+            session.setAttribute("prenom", utilisateur.getPrenom());
+            session.setAttribute("email", utilisateur.getEmail());
+            session.setAttribute("role", role);
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            session.setMaxInactiveInterval(30 * 60);
 
-            ps.setString(1, email.trim());
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if (rs.next()) {
-
-                    String motDePasseEnregistre = rs.getString("mot_de_passe");
-
-                    boolean motDePasseCorrect =
-                            motDePasseEnregistre != null
-                            && motDePasseEnregistre.startsWith("$2")
-                            && BCrypt.checkpw(motDePasse, motDePasseEnregistre);
-
-                    if (!motDePasseCorrect) {
-                        request.setAttribute("erreur",
-                                "Adresse e-mail ou mot de passe incorrect.");
-                        doGet(request, response);
-                        return;
-                    }
-
-                    if (!rs.getBoolean("actif")) {
-                        request.setAttribute("erreur",
-                                "Votre compte est désactivé.");
-                        doGet(request, response);
-                        return;
-                    }
-
-                    String type = rs.getString("type_utilisateur");
-
-                    if (type == null ||
-                            !(type.equalsIgnoreCase("CLIENT")
-                            || type.equalsIgnoreCase("AGENT")
-                            || type.equalsIgnoreCase("ADMIN")
-                            || type.equalsIgnoreCase("ADMINISTRATEUR"))) {
-
-                        request.setAttribute("erreur",
-                                "Profil utilisateur non reconnu.");
-                        doGet(request, response);
-                        return;
-                    }
-
-                    HttpSession ancienneSession = request.getSession(false);
-
-                    if (ancienneSession != null) {
-                        ancienneSession.invalidate();
-                    }
-
-                    HttpSession session = request.getSession(true);
-
-                    session.setAttribute("utilisateurId", rs.getLong("id"));
-                    session.setAttribute("nom", rs.getString("nom"));
-                    session.setAttribute("prenom", rs.getString("prenom"));
-                    session.setAttribute("email", rs.getString("email"));
-                    session.setAttribute("role", type.toUpperCase());
-
-                    session.setMaxInactiveInterval(30 * 60);
-
-                    String contextPath = request.getContextPath();
-
-                    if ("CLIENT".equalsIgnoreCase(type)) {
-                        response.sendRedirect(contextPath + "/client/dashboard");
-                    } else if ("AGENT".equalsIgnoreCase(type)) {
-                        response.sendRedirect(contextPath + "/agent/dashboard");
-                    } else {
-                        response.sendRedirect(contextPath + "/admin/dashboard");
-                    }
-
-                } else {
-                    request.setAttribute("erreur",
-                            "Adresse e-mail ou mot de passe incorrect.");
-                    doGet(request, response);
-                }
+            String contextPath = request.getContextPath();
+            switch (role) {
+                case "CLIENT":
+                    response.sendRedirect(contextPath + "/client/dashboard");
+                    break;
+                case "AGENT":
+                    response.sendRedirect(contextPath + "/agent/dashboard");
+                    break;
+                default:
+                    response.sendRedirect(contextPath + "/admin/dashboard");
+                    break;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            request.setAttribute("erreur",
-                    "Une erreur est survenue lors de la connexion.");
+        } catch (ServiceException e) {
+            request.setAttribute("erreur", e.getMessage());
+            doGet(request, response);
+        } catch (RuntimeException e) {
+            getServletContext().log("Erreur lors de la connexion", e);
+            request.setAttribute("erreur", "Une erreur est survenue lors de la connexion.");
             doGet(request, response);
         }
+    }
+
+    /** Rôle stocké en session : CLIENT, AGENT ou ADMIN (mêmes valeurs que type_utilisateur en base). */
+    private static String roleDe(Utilisateur u) {
+        if (u instanceof Client) {
+            return "CLIENT";
+        }
+        if (u instanceof Agent) {
+            return "AGENT";
+        }
+        if (u instanceof Administrateur) {
+            return "ADMIN";
+        }
+        throw new ServiceException("Profil utilisateur non reconnu.");
     }
 }
