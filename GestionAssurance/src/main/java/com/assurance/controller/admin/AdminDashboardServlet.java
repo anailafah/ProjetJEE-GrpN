@@ -1,4 +1,4 @@
-package com.assurance.controller;
+package com.assurance.controller.admin;
 import com.assurance.service.StatistiquesService;
 
 import java.io.IOException;

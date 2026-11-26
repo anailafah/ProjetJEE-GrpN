@@ -1,8 +1,8 @@
-package com.assurance.controller;
+package com.assurance.controller.agent;
 
 import java.io.IOException;
 
-import com.assurance.service.ContratService;
+import com.assurance.service.GarantieService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,12 +11,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/agent/suspendre-contrat")
-public class SuspendreContratServlet extends HttpServlet {
+@WebServlet("/agent/supprimer-garantie")
+public class AgentSupprimerGarantieServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private ContratService contratService = new ContratService();
+    private GarantieService garantieService = new GarantieService();
 
     @Override
     protected void doPost(HttpServletRequest request,
@@ -36,23 +36,23 @@ public class SuspendreContratServlet extends HttpServlet {
         try {
             Long id = Long.parseLong(request.getParameter("id"));
 
-            contratService.suspendre(id);
+            garantieService.supprimer(id);
 
-            session.setAttribute(
-                "messageSucces",
-                "Le contrat a été suspendu avec succès."
-            );
+            session.setAttribute("messageSucces",
+                    "Garantie supprimée avec succès !");
+
+        } catch (IllegalArgumentException e) {
+
+            session.setAttribute("messageErreur",
+                    "Suppression impossible : " + e.getMessage());
 
         } catch (Exception e) {
 
-            session.setAttribute(
-                "messageErreur",
-                e.getMessage()
-            );
+            session.setAttribute("messageErreur",
+                    "Impossible de supprimer cette garantie. Elle est peut-être associée à un contrat.");
         }
 
         response.sendRedirect(
-            request.getContextPath() + "/agent/contrats"
-        );
+                request.getContextPath() + "/agent/garanties");
     }
 }

@@ -69,7 +69,6 @@ public class UtilisateurService {
                                               String telephone, String niveauAcces) {
         Administrateur admin = new Administrateur();
         remplirChampsCommuns(admin, nom, prenom, email, motDePasse, telephone);
-        admin.setNiveauAcces(obligatoire(niveauAcces, 50, "Le niveau d'accès"));
         enregistrer(admin);
         return admin;
     }

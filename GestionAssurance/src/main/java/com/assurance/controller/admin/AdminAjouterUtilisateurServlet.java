@@ -1,4 +1,4 @@
-package com.assurance.controller;
+package com.assurance.controller.admin;
 
 import java.io.IOException;
 import java.time.LocalDate;

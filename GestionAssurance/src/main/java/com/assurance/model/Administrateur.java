@@ -12,13 +12,6 @@ public class Administrateur extends Utilisateur {
 
     public Administrateur() {
         super();
-    }
-
-    public String getNiveauAcces() {
-        return niveauAcces;
-    }
-
-    public void setNiveauAcces(String niveauAcces) {
-        this.niveauAcces = niveauAcces;
+        
     }
 }

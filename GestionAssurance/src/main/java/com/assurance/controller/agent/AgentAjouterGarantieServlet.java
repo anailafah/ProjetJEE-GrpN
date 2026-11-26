@@ -1,4 +1,4 @@
-package com.assurance.controller;
+package com.assurance.controller.agent;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -13,8 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/agent/modifier-garantie")
-public class AgentModifierGarantieServlet extends HttpServlet {
+@WebServlet("/agent/ajouter-garantie")
+public class AgentAjouterGarantieServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,24 +46,8 @@ public class AgentModifierGarantieServlet extends HttpServlet {
             return;
         }
 
-        try {
-            Long id = Long.parseLong(request.getParameter("id"));
-
-            Garantie garantie = garantieService.trouverParId(id);
-
-            if (garantie == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
-
-            request.setAttribute("garantie", garantie);
-
-            request.getRequestDispatcher("/agent/modifier-garantie.jsp")
-                   .forward(request, response);
-
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        }
+        request.getRequestDispatcher("/agent/ajouter-garantie.jsp")
+               .forward(request, response);
     }
 
     @Override
@@ -80,38 +64,29 @@ public class AgentModifierGarantieServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            Long id = Long.parseLong(request.getParameter("id"));
+            String nom = request.getParameter("nom");
+            String description = request.getParameter("description");
+            String montantTexte = request.getParameter("montantCouverture");
 
-            Garantie garantie = garantieService.trouverParId(id);
+            BigDecimal montant = new BigDecimal(montantTexte);
 
-            if (garantie == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
+            Garantie garantie = new Garantie(
+                nom,
+                description,
+                montant
+            );
 
-            garantie.setNom(request.getParameter("nom"));
-            garantie.setDescription(request.getParameter("description"));
-
-            BigDecimal montant = new BigDecimal(
-                    request.getParameter("montantCouverture"));
-
-            garantie.setMontantCouverture(montant);
-
-            garantieService.modifier(garantie);
+            garantieService.ajouter(garantie);
 
             session.setAttribute("messageSucces",
-                    "Garantie modifiée avec succès !");
-
-            response.sendRedirect(
-                    request.getContextPath() + "/agent/garanties");
+                    "La garantie a été ajoutée avec succès.");
 
         } catch (IllegalArgumentException e) {
 
             session.setAttribute("messageErreur",
-                    "Modification impossible : vérifiez les informations saisies.");
-
-            response.sendRedirect(
-                    request.getContextPath() + "/agent/garanties");
+                    "Données invalides. Vérifiez le montant et les informations saisies.");
         }
+
+        response.sendRedirect(request.getContextPath() + "/agent/garanties");
     }
 }
