@@ -1,5 +1,6 @@
 package com.assurance.service;
 
+import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,8 +26,11 @@ public class ContratService {
 
         verifierContrat(contrat,true);
         verifierNumeroContrat(contrat.getNumeroContrat(), null);
-        contrat.setStatut("ACTIF");
-
+        if (contrat.getDateFin().isBefore(LocalDate.now())) {
+            contrat.setStatut("EXPIRE");
+        } else {
+            contrat.setStatut("EN_ATTENTE");
+        }
         contratDAO.ajouter(contrat);
     }
 
@@ -41,6 +45,15 @@ public class ContratService {
         }
 
         return contratDAO.trouverParId(id);
+    }
+    
+    public List<Contrat> listerParClient(Long clientId) {
+
+        if (clientId == null || clientId <= 0) {
+            throw new IllegalArgumentException("Identifiant client invalide.");
+        }
+
+        return contratDAO.listerParClient(clientId);
     }
 
     public void modifier(Contrat contrat) {
@@ -89,11 +102,11 @@ public class ContratService {
             throw new IllegalArgumentException("La date de fin doit être après la date de début.");
         }
 
-        if (creation && contrat.getDateDebut().isBefore(LocalDate.now())) {
+        /*if (creation && contrat.getDateDebut().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException(
                 "La date de début ne peut pas être dans le passé."
             );
-        }
+        }*/
 
         BigDecimal montant = contrat.getMontant();
 
@@ -176,14 +189,82 @@ public class ContratService {
             );
         }
 
-        if ("ANNULE".equalsIgnoreCase(contrat.getStatut())) {
+        if ("RESILIE".equalsIgnoreCase(contrat.getStatut())) {
             throw new IllegalArgumentException(
-                "Ce contrat est déjà annulé."
+                "Ce contrat est déjà résilié."
+            );
+        }
+        
+
+        if (!"ACTIF".equalsIgnoreCase(contrat.getStatut())
+                && !"SUSPENDU".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Ce contrat ne peut pas être résilié dans son état actuel."
             );
         }
 
-        contrat.setStatut("ANNULE");
+        contrat.setStatut("RESILIE");
 
         contratDAO.modifier(contrat);
     }
+    public void suspendre(Long id) {
+        Contrat contrat = contratDAO.trouverParId(id);
+
+        if (contrat == null) {
+            throw new IllegalArgumentException("Contrat introuvable.");
+        }
+
+        if (!"ACTIF".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Seul un contrat actif peut être suspendu."
+            );
+        }
+
+        contrat.setStatut("SUSPENDU");
+        contratDAO.modifier(contrat);
+    }
+    
+    public void renouveler(Long id) {
+        Contrat contrat = contratDAO.trouverParId(id);
+
+        if (contrat == null) {
+            throw new IllegalArgumentException("Contrat introuvable.");
+        }
+
+        if (!"EXPIRE".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Seul un contrat expiré peut être renouvelé."
+            );
+        }
+
+        java.time.LocalDate nouvelleDateDebut = java.time.LocalDate.now();
+        java.time.LocalDate nouvelleDateFin =
+            contrat.getDateFin().plusYears(1);
+
+        contrat.setDateDebut(nouvelleDateDebut);
+        contrat.setDateFin(nouvelleDateFin);
+        contrat.setStatut("ACTIF");
+
+        contratDAO.modifier(contrat);
+    }
+    
+
+
+    public void activer(Long id) {
+    	Contrat contrat = contratDAO.trouverParId(id);
+
+    	if (contrat == null) {
+    		throw new IllegalArgumentException("Contrat introuvable.");
+    	}
+
+    	if (!"EN_ATTENTE".equalsIgnoreCase(contrat.getStatut())) {
+    		throw new IllegalArgumentException(
+            "Seul un contrat en attente peut être activé.");
+    	}
+
+    	contrat.setStatut("ACTIF");
+    	contratDAO.modifier(contrat);
+}
+
+
 }

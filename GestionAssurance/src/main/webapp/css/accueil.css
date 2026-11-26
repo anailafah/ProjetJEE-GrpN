@@ -68,36 +68,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Connexion */
-.navigation .btn-login {
-    color: #142d4e;
-    background: white;
-    border: 2px solid #142d4e;
-}
 
-.navigation .btn-login:hover {
-    color: white;
-    background: #142d4e;
-}
-
-/* Inscription */
-.navigation .btn-register {
-    color: white;
-    background: #13a99a;
-    border: 2px solid #13a99a;
-}
-
-.navigation .btn-register:hover {
-    color: white;
-    background: #0e887c;
-    border-color: #0e887c;
-    transform: translateY(-2px);
-}
-
-.navigation a:hover,
-.footer-links a:hover {
-    color: #13a99a;
-}
 
 /* BANNIERE PRINCIPALE */
 
@@ -141,7 +112,7 @@ body {
     margin-bottom: 30px;
 }
 
-.btn-principal {
+.btn-principal, .btn-login {
     display: inline-block;
     background: #142d4e;
     color: white;
@@ -382,5 +353,22 @@ body {
         font-size: 26px;
     }
 }
+.btn-login {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #ffffff;
+    color: #2457d6;
+    border: 2px solid #2457d6;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
 
+.btn-login:hover {
+    background-color: #2457d6;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
 

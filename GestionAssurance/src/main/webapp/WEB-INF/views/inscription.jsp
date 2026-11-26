@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription - AssurPlus</title>
+    <title>Inscription - GestionAssurance</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/inscription.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
 <div class="register-container">
     <div class="register-box">
 
-        <h1>AssurPlus</h1>
+        <h1>GestionAssurance</h1>
         <h2>Créer un compte client</h2>
         <p class="subtitle">Rejoignez notre espace client</p>
 
