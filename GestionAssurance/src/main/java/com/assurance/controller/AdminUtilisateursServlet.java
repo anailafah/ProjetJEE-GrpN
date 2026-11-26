@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/admin/utilisateurs")
+//@WebServlet("/admin/utilisateurs")
 public class AdminUtilisateursServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

@@ -1,5 +1,8 @@
 package com.assurance.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
@@ -291,5 +294,20 @@ public class UtilisateurService {
         if (!dao.modifierRole(id, role)) {
             throw new ServiceException("Impossible de modifier le rôle.");
         }
+    }
+    
+    /** Liste filtrée pour l'écran d'administration : mot-clé (nom, prénom, email) et rôle facultatifs. */
+    public List<Utilisateur> rechercher(String motCle, String role) {
+        List<Utilisateur> liste = estVide(motCle) ? dao.lister() : dao.rechercher(motCle.trim());
+        if (estVide(role)) {
+            return liste;
+        }
+        Class<?> type = switch (role.toUpperCase()) {
+            case "CLIENT" -> Client.class;
+            case "AGENT" -> Agent.class;
+            case "ADMIN" -> Administrateur.class;
+            default -> throw new ServiceException("Rôle inconnu.");
+        };
+        return liste.stream().filter(type::isInstance).collect(Collectors.toList());
     }
 }
