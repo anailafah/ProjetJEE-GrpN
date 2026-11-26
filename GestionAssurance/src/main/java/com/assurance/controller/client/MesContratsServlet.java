@@ -1,4 +1,4 @@
-package com.assurance.controller;
+package com.assurance.controller.client;
 
 import java.io.IOException;
 
@@ -11,8 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/client/garanties")
-public class ClientGarantiesServlet extends HttpServlet {
+@WebServlet("/client/mes-contrats")
+public class MesContratsServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,6 +25,7 @@ public class ClientGarantiesServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
+        // Vérifier que l'utilisateur est connecté en tant que CLIENT
         if (session == null
                 || session.getAttribute("utilisateurId") == null
                 || !"CLIENT".equals(session.getAttribute("role"))) {
@@ -39,13 +40,16 @@ public class ClientGarantiesServlet extends HttpServlet {
             request.setAttribute("contrats",
                     contratService.listerParClient(clientId));
 
+            request.getRequestDispatcher("/client/mes-contrats.jsp")
+                   .forward(request, response);
+
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("erreur",
-                    "Impossible de charger vos garanties.");
-        }
+                    "Impossible de charger vos contrats.");
 
-        request.getRequestDispatcher("/client/garanties.jsp")
-               .forward(request, response);
+            request.getRequestDispatcher("/client/mes-contrats.jsp")
+                   .forward(request, response);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.assurance.controller;
+package com.assurance.controller.agent;
 
 import java.io.IOException;
 
@@ -9,9 +9,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/admin/annuler-contrat")
-public class AnnulerContratServlet extends HttpServlet {
+@WebServlet("/agent/suspendre-contrat")
+public class SuspendreContratServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,29 +20,39 @@ public class AnnulerContratServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request,
-            HttpServletResponse response)
+                          HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null ||
+            !"AGENT".equalsIgnoreCase(
+                String.valueOf(session.getAttribute("role")))) {
+
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         try {
             Long id = Long.parseLong(request.getParameter("id"));
 
-            contratService.annuler(id);
+            contratService.suspendre(id);
 
-            request.getSession().setAttribute(
+            session.setAttribute(
                 "messageSucces",
-                "Contrat annulé avec succès !"
+                "Le contrat a été suspendu avec succès."
             );
 
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
 
-            request.getSession().setAttribute(
+            session.setAttribute(
                 "messageErreur",
                 e.getMessage()
             );
         }
 
         response.sendRedirect(
-            request.getContextPath() + "/admin/contrats"
+            request.getContextPath() + "/agent/contrats"
         );
     }
 }

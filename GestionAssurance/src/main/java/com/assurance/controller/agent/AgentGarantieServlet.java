@@ -1,4 +1,4 @@
-package com.assurance.controller;
+package com.assurance.controller.agent;
 
 import java.io.IOException;
 
@@ -11,16 +11,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/agent/supprimer-garantie")
-public class AgentSupprimerGarantieServlet extends HttpServlet {
+@WebServlet("/agent/garanties")
+public class AgentGarantieServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
     private GarantieService garantieService = new GarantieService();
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
@@ -34,25 +34,14 @@ public class AgentSupprimerGarantieServlet extends HttpServlet {
         }
 
         try {
-            Long id = Long.parseLong(request.getParameter("id"));
+            request.setAttribute("garanties", garantieService.lister());
 
-            garantieService.supprimer(id);
-
-            session.setAttribute("messageSucces",
-                    "Garantie supprimée avec succès !");
-
-        } catch (IllegalArgumentException e) {
-
-            session.setAttribute("messageErreur",
-                    "Suppression impossible : " + e.getMessage());
+            request.getRequestDispatcher("/agent/garanties.jsp")
+                   .forward(request, response);
 
         } catch (Exception e) {
-
-            session.setAttribute("messageErreur",
-                    "Impossible de supprimer cette garantie. Elle est peut-être associée à un contrat.");
+            throw new ServletException(
+                "Erreur lors du chargement des garanties.", e);
         }
-
-        response.sendRedirect(
-                request.getContextPath() + "/agent/garanties");
     }
 }

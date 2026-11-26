@@ -1,4 +1,4 @@
-package com.assurance.controller;
+package com.assurance.controller.client;
 
 import java.io.IOException;
 
