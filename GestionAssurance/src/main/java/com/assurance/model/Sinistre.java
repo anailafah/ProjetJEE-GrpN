@@ -5,6 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+
 @Entity
 @Table(name = "sinistres")
 public class Sinistre {
@@ -25,7 +29,16 @@ public class Sinistre {
     @Column(name = "date_declaration")
     private LocalDateTime dateDeclaration;
 
-    private String statut;
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(nullable = false, length = 30)
+    private StatutSinistre statut = StatutSinistre.DECLARE;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "type_sinistre", nullable = false, length = 30)
+    private TypeSinistre typeSinistre;
+
 
     @Column(name = "montant_demande", precision = 12, scale = 2)
     private BigDecimal montantDemande;
@@ -80,12 +93,20 @@ public class Sinistre {
         this.dateDeclaration = dateDeclaration;
     }
 
-    public String getStatut() {
+    public StatutSinistre getStatut() {
         return statut;
     }
 
-    public void setStatut(String statut) {
+    public void setStatut(StatutSinistre statut) {
         this.statut = statut;
+    }
+
+    public TypeSinistre getTypeSinistre() {
+        return typeSinistre;
+    }
+
+    public void setTypeSinistre(TypeSinistre typeSinistre) {
+        this.typeSinistre = typeSinistre;
     }
 
     public BigDecimal getMontantDemande() {

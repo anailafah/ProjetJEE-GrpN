@@ -64,7 +64,11 @@
     		<artifactId>jbcrypt</artifactId>
     		<version>0.4</version>
 		</dependency>
-		
+		<dependency>
+    		<groupId>com.openai</groupId>
+    		<artifactId>openai-java</artifactId>
+    		<version>4.113.0</version>
+		</dependency>
     </dependencies>
 
     <build>

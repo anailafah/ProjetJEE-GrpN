@@ -40,5 +40,8 @@
         <mapping class="com.assurance.model.Paiement"/>
         <mapping class="com.assurance.model.Echeance"/>
 
+        <mapping class="com.assurance.model.DocumentSinistre"/>
+        <mapping class="com.assurance.model.CommentaireSinistre"/>
+
     </session-factory>
 </hibernate-configuration>
