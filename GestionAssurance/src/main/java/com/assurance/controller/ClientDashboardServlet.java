@@ -25,7 +25,7 @@ public class ClientDashboardServlet extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("/WEB-INF/views/client/dashboard.jsp")
+        request.getRequestDispatcher("/client/dashboard.jsp")
                .forward(request, response);
     }
 }

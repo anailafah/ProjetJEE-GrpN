@@ -9,17 +9,25 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/assistant-ia")
 public class AssistantIAServlet extends HttpServlet {
 
-    private AssistantIAService assistantIAService = new AssistantIAService();
+    private final AssistantIAService assistantIAService = new AssistantIAService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.getRequestDispatcher("/WEB-INF/views/assistant-ia.jsp")
+        HttpSession session = request.getSession(false);
+
+        if (session == null || !"CLIENT".equals(session.getAttribute("role"))) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        request.getRequestDispatcher("/client/assistant-ia.jsp")
                .forward(request, response);
     }
 
@@ -29,14 +37,24 @@ public class AssistantIAServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
+        HttpSession session = request.getSession(false);
+
+        if (session == null || !"CLIENT".equals(session.getAttribute("role"))) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
         String question = request.getParameter("question");
 
-        String reponse = assistantIAService.repondre(question);
+        if (question == null || question.isBlank()) {
+            request.setAttribute("erreur", "Veuillez saisir une question.");
+        } else {
+            String reponse = assistantIAService.repondre(question);
+            request.setAttribute("question", question);
+            request.setAttribute("reponse", reponse);
+        }
 
-        request.setAttribute("question", question);
-        request.setAttribute("reponse", reponse);
-
-        request.getRequestDispatcher("/WEB-INF/views/assistant-ia.jsp")
+        request.getRequestDispatcher("/client/assistant-ia.jsp")
                .forward(request, response);
     }
 }
