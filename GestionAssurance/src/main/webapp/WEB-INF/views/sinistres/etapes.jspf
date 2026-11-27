@@ -1,3 +1,5 @@
+<%@ page pageEncoding="UTF-8" %>
+
 <%-- Avancement du dossier : Déclaré > En analyse > Accepté (ou Refusé) > Indemnisé.
      Inclus dans les pages de détail client et employé. Attend la variable "sinistre". --%>
 <c:set var="rang" value="${sinistre.statut.ordinal()}"/>

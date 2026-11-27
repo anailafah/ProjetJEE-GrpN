@@ -1,3 +1,5 @@
+<%@ page pageEncoding="UTF-8" %>
+
 <%-- Menu latéral des pages sinistre côté employé.
      Mêmes liens que les autres pages agent / admin ; "espace" vaut "agent" ou "admin". --%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
