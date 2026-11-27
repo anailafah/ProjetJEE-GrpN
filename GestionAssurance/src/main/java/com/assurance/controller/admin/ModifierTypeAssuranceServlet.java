@@ -23,6 +23,14 @@ public class ModifierTypeAssuranceServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+    	
+    	jakarta.servlet.http.HttpSession session = request.getSession(false);
+
+    	if (session == null ||
+    	        !"ADMIN".equalsIgnoreCase((String) session.getAttribute("role"))) {
+    	    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+    	    return;
+    	}
 
         try {
             Long id = Long.parseLong(request.getParameter("id"));
@@ -51,6 +59,13 @@ public class ModifierTypeAssuranceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+    	jakarta.servlet.http.HttpSession session = request.getSession(false);
+
+    	if (session == null ||
+    	        !"ADMIN".equalsIgnoreCase((String) session.getAttribute("role"))) {
+    	    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+    	    return;
+    	}
 
         request.setCharacterEncoding("UTF-8");
 
@@ -93,8 +108,26 @@ public class ModifierTypeAssuranceServlet extends HttpServlet {
 
             request.setAttribute("messageErreur", e.getMessage());
 
-            request.getRequestDispatcher(
-                    "/admin/types-assurance").forward(request, response);
+            try {
+                Long id = Long.parseLong(request.getParameter("id"));
+                TypeAssurance type = typeAssuranceService.trouverParId(id);
+
+                if (type != null) {
+                    request.setAttribute("type", type);
+                    request.getRequestDispatcher(
+                            "/admin/modifier-type-assurance.jsp")
+                            .forward(request, response);
+                    return;
+                }
+
+            } catch (NumberFormatException ex) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                        "Identifiant invalide.");
+                return;
+            }
+
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                    "Type d'assurance introuvable.");
         }
     }
 }

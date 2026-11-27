@@ -72,14 +72,27 @@ public class TypeAssuranceService {
             throw new IllegalArgumentException("Le nom est obligatoire.");
         }
 
-        if (type.getDureeMois() <= 0) {
-            throw new IllegalArgumentException("La durée doit être supérieure à zéro.");
+        if (type.getDureeMois() == null || type.getDureeMois() <= 0) {
+            throw new IllegalArgumentException(
+                    "La durée doit être supérieure à zéro.");
         }
-
         BigDecimal tarif = type.getTarifBase();
 
         if (tarif == null || tarif.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Le tarif doit être supérieur à zéro.");
         }
+    }
+    public void activer(Long id) {
+
+        TypeAssurance type = trouverParId(id);
+
+        if (type == null) {
+            throw new IllegalArgumentException(
+                    "Type d'assurance introuvable.");
+        }
+
+        type.setActif(true);
+
+        typeAssuranceDAO.modifier(type);
     }
 }
