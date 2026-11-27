@@ -1,0 +1,21 @@
+<%-- Avancement du dossier : Déclaré > En analyse > Accepté (ou Refusé) > Indemnisé.
+     Inclus dans les pages de détail client et employé. Attend la variable "sinistre". --%>
+<c:set var="rang" value="${sinistre.statut.ordinal()}"/>
+<c:set var="refuse" value="${sinistre.statut == 'REFUSE'}"/>
+<c:set var="indemnise" value="${sinistre.statut == 'INDEMNISE'}"/>
+
+<div class="etapes">
+    <div class="etape ${rang == 0 ? 'courante' : 'faite'}">Déclaré</div>
+
+    <div class="etape ${rang == 1 ? 'courante' : (rang > 1 ? 'faite' : '')}">En analyse</div>
+
+    <c:choose>
+        <c:when test="${refuse}">
+            <div class="etape refus">Refusé</div>
+        </c:when>
+        <c:otherwise>
+            <div class="etape ${sinistre.statut == 'ACCEPTE' ? 'courante' : (indemnise ? 'faite' : '')}">Accepté</div>
+            <div class="etape ${indemnise ? 'courante' : ''}">Indemnisé</div>
+        </c:otherwise>
+    </c:choose>
+</div>
