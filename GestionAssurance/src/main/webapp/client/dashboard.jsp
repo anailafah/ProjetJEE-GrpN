@@ -310,6 +310,29 @@
     Consulter mes contrats 
 </a>
 	</div>
+	<!-- MES DEMANDES DE CONTRAT -->
+<div class="card">
+    <h3>Mes demandes de contrat</h3>
+    <p>
+        Consultez vos demandes de souscription et suivez leur statut :
+        en attente, acceptée ou refusée.
+    </p>
+
+    <a href="${pageContext.request.contextPath}/client/mes-demandes"
+       style="
+           display: inline-block;
+           margin-top: 15px;
+           padding: 11px 20px;
+           background: linear-gradient(120deg, #142b4a, #1d5275);
+           color: white;
+           text-decoration: none;
+           border-radius: 8px;
+           font-size: 14px;
+           font-weight: 600;
+       ">
+        Suivre mes demandes
+    </a>
+</div>
 
         <!-- GARANTIES -->
         <div class="card">
@@ -375,28 +398,6 @@
 		 </div>
         
 
-        <!-- HISTORIQUE -->
-        <div class="card">
-            <h3>Historique de mes demandes</h3>
-            <p>
-                Retrouvez l'historique de vos déclarations
-                et de vos demandes.
-            </p>
-            <a href="${pageContext.request.contextPath}/client/historiques"
-   style="
-   		display:inline-block;
-  		margin-top:15px;
-   		padding:10px 18px;
-   		background:linear-gradient(120deg, #142b4a, #1d5275);
-   		color:white;
-   		text-decoration:none;
-   		border-radius:8px;
-   		font-weight:600;">
-    	Consulter mon historique
-		</a>       
-		 </div>
-        
-
         <!-- ASSISTANT IA -->
         <div class="card">
             <h3>Assistant IA</h3>
@@ -431,6 +432,7 @@
     	Modifier mon profil
 		</a>       
 		 </div>
+		 
     </section>
 
 </main>
