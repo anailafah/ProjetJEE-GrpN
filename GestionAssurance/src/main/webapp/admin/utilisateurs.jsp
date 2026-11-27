@@ -387,17 +387,12 @@ td strong { color: #14233f; }
             </a>
         </div>
 
-        <c:if test="${not empty sessionScope.messageSucces}">
-            <div class="message success">
-                <c:out value="${sessionScope.messageSucces}"/>
-            </div>
-            <c:remove var="messageSucces" scope="session"/>
+        <c:if test="${not empty succes}">
+            <div class="message success"><c:out value="${succes}"/></div>
         </c:if>
 
-        <c:if test="${not empty messageErreur}">
-            <div class="message error">
-                <c:out value="${messageErreur}"/>
-            </div>
+        <c:if test="${not empty erreur}">
+            <div class="message error"><c:out value="${erreur}"/></div>
         </c:if>
 
         <form class="search-form"
@@ -405,9 +400,16 @@ td strong { color: #14233f; }
               method="get">
 
             <input type="text"
-                   name="recherche"
+                   name="q"
                    placeholder="Rechercher par nom, prénom ou email..."
-                   value="${param.recherche}">
+                   value="<c:out value='${q}'/>">
+
+            <select name="role">
+                <option value="" ${empty roleFiltre ? 'selected' : ''}>Tous</option>
+                <option value="CLIENT" ${roleFiltre == 'CLIENT' ? 'selected' : ''}>Clients</option>
+                <option value="AGENT" ${roleFiltre == 'AGENT' ? 'selected' : ''}>Agents</option>
+                <option value="ADMIN" ${roleFiltre == 'ADMIN' ? 'selected' : ''}>Administrateurs</option>
+            </select>
 
             <button type="submit">Rechercher</button>
         </form>
@@ -463,16 +465,23 @@ td strong { color: #14233f; }
                                                 Modifier
                                             </a>
 
-                                            <form action="${pageContext.request.contextPath}/admin/desactiver-utilisateur"
-                                                  method="post"
-                                                  onsubmit="return confirm('Confirmer le changement de statut de cet utilisateur ?');">
-
-                                                <input type="hidden" name="id" value="${utilisateur.id}">
-
-                                                <button type="submit" class="btn-disable">
-                                                    Changer statut
-                                                </button>
-                                            </form>
+                                            <c:choose>
+                                                <c:when test="${utilisateur.id == utilisateurCourantId}">
+                                                    <span class="subtitle">(vous)</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <form action="${pageContext.request.contextPath}/admin/utilisateurs"
+                                                          method="post"
+                                                          onsubmit="return confirm('Confirmer le changement de statut ?');">
+                                                        <input type="hidden" name="csrf" value="${csrfToken}">
+                                                        <input type="hidden" name="id" value="${utilisateur.id}">
+                                                        <input type="hidden" name="action" value="${utilisateur.actif ? 'desactiver' : 'activer'}">
+                                                        <button type="submit" class="btn-disable">
+                                                            ${utilisateur.actif ? 'Désactiver' : 'Activer'}
+                                                        </button>
+                                                    </form>
+                                                </c:otherwise>
+                                            </c:choose>
 
                                         </div>
                                     </td>
