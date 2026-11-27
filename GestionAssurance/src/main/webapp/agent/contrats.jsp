@@ -385,18 +385,33 @@ td strong { color: #14233f; }
     </form>
 </c:if>
 <c:if test="${contrat.statut == 'EN_ATTENTE'}">
+
     <form action="${pageContext.request.contextPath}/agent/activer-contrat"
           method="post"
           style="display:inline;"
-          onsubmit="return confirm('Voulez-vous vraiment activer ce contrat ?');">
+          onsubmit="return confirm('Voulez-vous accepter cette demande ?');">
 
         <input type="hidden" name="id" value="${contrat.id}">
 
         <button type="submit"
                 style="background:#28a745;color:white;padding:8px 13px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
-            Activer
+            Accepter
         </button>
     </form>
+
+    <form action="${pageContext.request.contextPath}/agent/refuser-contrat"
+          method="post"
+          style="display:inline;"
+          onsubmit="return confirm('Voulez-vous vraiment refuser cette demande ?');">
+
+        <input type="hidden" name="id" value="${contrat.id}">
+
+        <button type="submit"
+                style="background:#dc3545;color:white;padding:8px 13px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
+            Refuser
+        </button>
+    </form>
+
 </c:if>
    			 						
 								</td>

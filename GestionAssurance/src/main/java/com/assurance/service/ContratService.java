@@ -1,8 +1,8 @@
 package com.assurance.service;
 
 import java.time.LocalDate;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -29,7 +29,7 @@ public class ContratService {
         if (contrat.getDateFin().isBefore(LocalDate.now())) {
             contrat.setStatut("EXPIRE");
         } else {
-            contrat.setStatut("EN_ATTENTE");
+            contrat.setStatut("ACTIF");
         }
         contratDAO.ajouter(contrat);
     }
@@ -265,6 +265,33 @@ public class ContratService {
     	contrat.setStatut("ACTIF");
     	contratDAO.modifier(contrat);
 }
+    public void refuser(Long id) {
+
+        Contrat contrat = contratDAO.trouverParId(id);
+
+        if (contrat == null) {
+            throw new IllegalArgumentException("Contrat introuvable.");
+        }
+
+        if (!"EN_ATTENTE".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Seul un contrat en attente peut être refusé."
+            );
+        }
+
+        contrat.setStatut("REFUSE");
+        contratDAO.modifier(contrat);
+    }
+    
+    public void demanderContrat(Contrat contrat) {
+
+        verifierContrat(contrat, true);
+        verifierNumeroContrat(contrat.getNumeroContrat(), null);
+
+        contrat.setStatut("EN_ATTENTE");
+
+        contratDAO.ajouter(contrat);
+    }
 
 
 }

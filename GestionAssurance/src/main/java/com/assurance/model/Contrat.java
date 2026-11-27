@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 @Table(name = "contrats")
 public class Contrat {
 
+    public static final String EN_ATTENTE = "EN_ATTENTE";
+    public static final String ACTIF = "ACTIF";
+    public static final String REFUSE = "REFUSE";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

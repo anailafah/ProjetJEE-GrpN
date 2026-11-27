@@ -142,4 +142,40 @@ public class ContratDAO {
             .uniqueResult();
         }
     }
+    
+ // Récupérer les demandes de contrats en attente
+    public List<Contrat> listerDemandesEnAttente() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            return session.createQuery(
+                "SELECT DISTINCT c FROM Contrat c " +
+                "LEFT JOIN FETCH c.client " +
+                "LEFT JOIN FETCH c.typeAssurance " +
+                "LEFT JOIN FETCH c.garanties " +
+                "WHERE c.statut = :statut",
+                Contrat.class
+            )
+            .setParameter("statut", Contrat.EN_ATTENTE)
+            .list();
+        }
+    }
+
+    // Récupérer les demandes en attente d'un client
+    public List<Contrat> listerDemandesEnAttenteParClient(Long clientId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            return session.createQuery(
+                "SELECT DISTINCT c FROM Contrat c " +
+                "LEFT JOIN FETCH c.client " +
+                "LEFT JOIN FETCH c.typeAssurance " +
+                "LEFT JOIN FETCH c.garanties " +
+                "WHERE c.client.id = :clientId " +
+                "AND c.statut = :statut",
+                Contrat.class
+            )
+            .setParameter("clientId", clientId)
+            .setParameter("statut", Contrat.EN_ATTENTE)
+            .list();
+        }
+    }
 }
