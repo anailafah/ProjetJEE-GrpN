@@ -2,12 +2,12 @@ package com.assurance.controller.admin;
 
 import java.math.BigDecimal;
 
+
 import com.assurance.model.TypeAssurance;
 
 import java.io.IOException;
 import java.util.List;
 
-import com.assurance.model.TypeAssurance;
 import com.assurance.service.TypeAssuranceService;
 
 import jakarta.servlet.ServletException;
@@ -42,7 +42,7 @@ public class TypeAssuranceServlet extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, NumberFormatException {
+            throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
 

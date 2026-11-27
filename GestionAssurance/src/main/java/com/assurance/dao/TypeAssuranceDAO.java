@@ -53,24 +53,14 @@ public class TypeAssuranceDAO {
         }
     }
 
-    public void supprimer(Long id) {
-        Transaction transaction = null;
-
+    public TypeAssurance trouverParNom(String nom) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
-            TypeAssurance type = session.get(TypeAssurance.class, id);
-
-            if (type != null) {
-                session.remove(type);
-            }
-
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Erreur lors de la suppression", e);
+            return session.createQuery(
+                "FROM TypeAssurance WHERE LOWER(nom) = LOWER(:nom)",
+                TypeAssurance.class
+            )
+            .setParameter("nom", nom.trim())
+            .uniqueResult();
         }
     }
 }

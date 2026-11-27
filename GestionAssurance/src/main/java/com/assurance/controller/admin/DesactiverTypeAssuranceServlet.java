@@ -22,6 +22,13 @@ public class DesactiverTypeAssuranceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+    	jakarta.servlet.http.HttpSession session = request.getSession(false);
+
+    	if (session == null ||
+    	        !"ADMIN".equalsIgnoreCase((String) session.getAttribute("role"))) {
+    	    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+    	    return;
+    	}
 
         try {
             Long id = Long.parseLong(request.getParameter("id"));
