@@ -307,7 +307,7 @@
        font-weight: 600;
        transition: 0.3s;
    ">
-    Consulter mes contrats →
+    Consulter mes contrats 
 </a>
 	</div>
 
@@ -360,8 +360,20 @@
                 Déclarez un sinistre et suivez son traitement
                 ainsi que son évolution.
             </p>
-            <span class="status">À venir</span>
-        </div>
+            <a href="${pageContext.request.contextPath}/client/sinistres"
+   style="
+   		display:inline-block;
+  		margin-top:15px;
+   		padding:10px 18px;
+   		background:linear-gradient(120deg, #142b4a, #1d5275);
+   		color:white;
+   		text-decoration:none;
+   		border-radius:8px;
+   		font-weight:600;">
+    	Consulter mes sinistres
+		</a>       
+		 </div>
+        
 
         <!-- HISTORIQUE -->
         <div class="card">
@@ -370,8 +382,20 @@
                 Retrouvez l'historique de vos déclarations
                 et de vos demandes.
             </p>
-            <span class="status">À venir</span>
-        </div>
+            <a href="${pageContext.request.contextPath}/client/historiques"
+   style="
+   		display:inline-block;
+  		margin-top:15px;
+   		padding:10px 18px;
+   		background:linear-gradient(120deg, #142b4a, #1d5275);
+   		color:white;
+   		text-decoration:none;
+   		border-radius:8px;
+   		font-weight:600;">
+    	Consulter mon historique
+		</a>       
+		 </div>
+        
 
         <!-- ASSISTANT IA -->
         <div class="card">
@@ -394,9 +418,19 @@
                 Consultez et modifiez vos informations
                 personnelles.
             </p>
-            <span class="status">À venir</span>
-        </div>
-
+<a href="${pageContext.request.contextPath}/profil"
+   style="
+   		display:inline-block;
+  		margin-top:15px;
+   		padding:10px 18px;
+   		background:linear-gradient(120deg, #142b4a, #1d5275);
+   		color:white;
+   		text-decoration:none;
+   		border-radius:8px;
+   		font-weight:600;">
+    	Modifier mon profil
+		</a>       
+		 </div>
     </section>
 
 </main>
