@@ -198,6 +198,7 @@
                             <th>Montant</th>
                             <th>Statut</th>
                             <th>Garanties</th>
+                            <th>Détails</th>
                         </tr>
                     </thead>
 
@@ -230,6 +231,17 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
+                                <td>
+    <a href="${pageContext.request.contextPath}/client/details-contrat?id=${contrat.id}"
+       style="background:#17243b;
+              color:white;
+              padding:8px 13px;
+              border-radius:6px;
+              text-decoration:none;
+              font-size:13px;">
+        Voir détails
+    </a>
+</td>
                             </tr>
                         </c:forEach>
                     </tbody>
