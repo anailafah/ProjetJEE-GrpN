@@ -173,10 +173,13 @@ CREATE TABLE `sinistres` (
   `statut` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'DECLARE',
   `montant_demande` decimal(12,2) DEFAULT NULL,
   `montant_indemnisation` decimal(12,2) DEFAULT NULL,
+  `garantie_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `numero_sinistre` (`numero_sinistre`),
   KEY `contrat_id` (`contrat_id`),
-  CONSTRAINT `sinistres_ibfk_1` FOREIGN KEY (`contrat_id`) REFERENCES `contrats` (`id`)
+  KEY `garantie_id` (`garantie_id`),
+  CONSTRAINT `sinistres_ibfk_1` FOREIGN KEY (`contrat_id`) REFERENCES `contrats` (`id`),
+  CONSTRAINT `sinistres_ibfk_garantie` FOREIGN KEY (`garantie_id`) REFERENCES `garanties` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

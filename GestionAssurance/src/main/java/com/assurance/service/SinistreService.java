@@ -13,6 +13,7 @@ import com.assurance.dao.SinistreDAO;
 import com.assurance.model.CommentaireSinistre;
 import com.assurance.model.Contrat;
 import com.assurance.model.DocumentSinistre;
+import com.assurance.model.Garantie;
 import com.assurance.model.Sinistre;
 import com.assurance.model.StatutSinistre;
 
@@ -158,30 +159,155 @@ public class SinistreService {
 
         verifierTransition(sinistre.getStatut(), nouveauStatut);
 
+        // Accepter un sinistre sur un contrat sans garantie le bloquerait :
+        // il ne pourrait plus être ni indemnisé ni refusé.
+        if (nouveauStatut == StatutSinistre.ACCEPTE && garantiesDuContrat(sinistre).isEmpty()) {
+            throw new IllegalArgumentException(
+                "Le contrat de ce client ne comporte aucune garantie : "
+                + "le sinistre n'est pas couvert, il doit être refusé.");
+        }
+
         sinistre.setStatut(nouveauStatut);
 
         sinistreDAO.modifier(sinistre);
     }
 
     /**
-     * Enregistre le montant d'indemnisation et passe le sinistre à INDEMNISE.
-     * Le sinistre doit être ACCEPTE.
+     * Enregistre l'indemnisation et passe le sinistre à INDEMNISE. Le sinistre doit être ACCEPTE.
+     *
+     * Règles :
+     *  - la garantie choisie doit faire partie du contrat du client ;
+     *  - montant ≤ plafond de la garantie (montantCouverture), s'il est renseigné ;
+     *  - montant ≤ montant demandé par le client ;
+     *  - montant < montant demandé : motif obligatoire (vétusté, expertise, plafond...).
+     * Un commentaire récapitulatif est ajouté au dossier, visible par le client.
      */
-    public void indemniser(Long sinistreId, BigDecimal montant) {
+    public void indemniser(Long sinistreId, Long garantieId, BigDecimal montant,
+                           String motif, Long agentId) {
+
+        if (agentId == null) {
+            throw new IllegalArgumentException("Utilisateur non identifié.");
+        }
 
         if (montant == null || montant.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(
                 "Le montant d'indemnisation doit être supérieur à zéro.");
         }
 
+        if (montant.stripTrailingZeros().scale() > 2) {
+            throw new IllegalArgumentException(
+                "Le montant d'indemnisation doit avoir au plus 2 décimales.");
+        }
+
+        String motifNettoye = motif == null ? "" : motif.trim();
+
+        if (motifNettoye.length() > 1500) {
+            throw new IllegalArgumentException("Le motif ne doit pas dépasser 1500 caractères.");
+        }
+
         Sinistre sinistre = trouverExistant(sinistreId);
 
         verifierTransition(sinistre.getStatut(), StatutSinistre.INDEMNISE);
 
+        // 1. La garantie doit faire partie du contrat du client
+        if (garantieId == null) {
+            throw new IllegalArgumentException(
+                "Choisissez la garantie du contrat qui couvre ce sinistre.");
+        }
+
+        Garantie garantie = garantiesDuContrat(sinistre).stream()
+                .filter(g -> garantieId.equals(g.getId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                    "Cette garantie ne fait pas partie du contrat du client."));
+
+        // 2. Jamais plus que le plafond de la garantie
+        BigDecimal plafond = garantie.getMontantCouverture();
+
+        if (plafond != null && montant.compareTo(plafond) > 0) {
+            throw new IllegalArgumentException(
+                "Le montant dépasse le plafond de la garantie « " + garantie.getNom()
+                + " » (" + plafond + " €).");
+        }
+
+        // 3. Jamais plus que ce que le client a demandé
+        BigDecimal demande = sinistre.getMontantDemande();
+
+        if (demande != null && montant.compareTo(demande) > 0) {
+            throw new IllegalArgumentException(
+                "Le montant dépasse le montant demandé par le client (" + demande + " €).");
+        }
+
+        // 4. Un remboursement partiel doit être justifié
+        boolean partiel = demande != null && montant.compareTo(demande) < 0;
+
+        if (partiel && motifNettoye.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Le montant est inférieur à la demande du client (" + demande
+                + " €) : indiquez le motif (plafond, vétusté, expertise...).");
+        }
+
+        sinistre.setGarantie(garantie);
         sinistre.setMontantIndemnisation(montant);
         sinistre.setStatut(StatutSinistre.INDEMNISE);
 
         sinistreDAO.modifier(sinistre);
+
+        // Trace visible par le client dans le suivi de son dossier
+        StringBuilder trace = new StringBuilder()
+                .append("[Indemnisé] ").append(montant).append(" €")
+                .append(" au titre de la garantie « ").append(garantie.getNom()).append(" »");
+
+        if (partiel) {
+            trace.append(" (montant demandé : ").append(demande).append(" €)");
+        }
+
+        trace.append('.');
+
+        if (!motifNettoye.isEmpty()) {
+            trace.append(" Motif : ").append(motifNettoye);
+        }
+
+        sinistreDAO.ajouterCommentaire(sinistreId, agentId, trace.toString());
+    }
+
+    /**
+     * Garanties du contrat concerné par le sinistre, avec leur plafond.
+     * Une garantie retirée du catalogue (désactivée) reste valable pour les contrats
+     * qui l'ont déjà souscrite : on ne filtre donc pas sur "actif".
+     */
+    public List<Garantie> garantiesDuContrat(Sinistre sinistre) {
+
+        if (sinistre == null || sinistre.getContrat() == null) {
+            return List.of();
+        }
+
+        Contrat contrat = contratDAO.trouverParId(sinistre.getContrat().getId());
+
+        if (contrat == null || contrat.getGaranties() == null) {
+            return List.of();
+        }
+
+        return contrat.getGaranties();
+    }
+
+    /**
+     * Montant proposé par défaut pour une garantie : le plus petit entre la demande et le plafond.
+     */
+    public BigDecimal montantPropose(Sinistre sinistre, Garantie garantie) {
+
+        BigDecimal demande = sinistre.getMontantDemande();
+        BigDecimal plafond = garantie.getMontantCouverture();
+
+        if (demande == null) {
+            return plafond;
+        }
+
+        if (plafond == null) {
+            return demande;
+        }
+
+        return demande.min(plafond);
     }
 
     /**
