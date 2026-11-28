@@ -1,0 +1,40 @@
+<%@ page pageEncoding="UTF-8" %>
+
+<%-- Menu latéral des pages sinistre côté employé.
+     Mêmes liens que les autres pages agent / admin ; "espace" vaut "agent" ou "admin". --%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+
+<aside class="sidebar">
+    <div class="brand">Gestion<span>Assurance</span></div>
+
+    <div class="menu-title">MENU PRINCIPAL</div>
+
+    <nav class="menu">
+        <c:choose>
+            <c:when test="${espace == 'admin'}">
+                <a href="${ctx}/admin/dashboard">Tableau de bord</a>
+                <a href="${ctx}/admin/utilisateurs">Utilisateurs</a>
+                <a href="${ctx}/admin/roles">Gestion des rôles</a>
+                <a href="${ctx}/admin/types-assurance">Types d'assurance</a>
+                <a href="${ctx}/admin/contrats">Contrats</a>
+                <a href="${ctx}/admin/sinistres" class="active">Sinistres</a>
+                <a href="${ctx}/statistiques">Statistiques</a>
+            </c:when>
+            <c:otherwise>
+                <a href="${ctx}/agent/dashboard">Tableau de bord</a>
+                <a href="${ctx}/agent/clients">Clients</a>
+                <a href="${ctx}/agent/contrats">Contrats</a>
+                <a href="${ctx}/agent/sinistres" class="active">Sinistres</a>
+                <a href="${ctx}/agent/garanties">Garanties</a>
+                <a href="${ctx}/agent/paiements">Paiements</a>
+                <a href="${ctx}/agent/statistiques">Statistiques</a>
+            </c:otherwise>
+        </c:choose>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <nav class="menu">
+            <a href="${ctx}/logout" class="logout">Déconnexion</a>
+        </nav>
+    </div>
+</aside>
