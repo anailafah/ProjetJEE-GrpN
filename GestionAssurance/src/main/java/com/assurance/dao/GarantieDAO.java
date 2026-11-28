@@ -1,4 +1,5 @@
 package com.assurance.dao;
+
 import java.util.List;
 
 import org.hibernate.Session;
@@ -24,15 +25,16 @@ public class GarantieDAO {
                 transaction.rollback();
             }
 
-            throw new RuntimeException("Erreur lors de l'ajout de la garantie", e);
+            throw new RuntimeException("Erreur lors de l'ajout de la garantie.", e);
         }
     }
 
-    // Lister toutes les garanties
+    // Lister toutes les garanties, actives et inactives
     public List<Garantie> lister() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
-                "FROM Garantie", Garantie.class
+                "FROM Garantie g ORDER BY g.nom ASC",
+                Garantie.class
             ).list();
         }
     }
@@ -40,6 +42,32 @@ public class GarantieDAO {
     public Garantie trouverParId(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(Garantie.class, id);
+        }
+    }
+
+    // Vérifier si un nom existe déjà, en ignorant la garantie modifiée
+    public boolean nomExiste(String nom, Long idExclu) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            String hql;
+
+            if (idExclu == null) {
+                hql = "SELECT COUNT(g) FROM Garantie g "
+                    + "WHERE LOWER(TRIM(g.nom)) = LOWER(TRIM(:nom))";
+            } else {
+                hql = "SELECT COUNT(g) FROM Garantie g "
+                    + "WHERE LOWER(TRIM(g.nom)) = LOWER(TRIM(:nom)) "
+                    + "AND g.id <> :id";
+            }
+
+            var query = session.createQuery(hql, Long.class);
+            query.setParameter("nom", nom.trim());
+
+            if (idExclu != null) {
+                query.setParameter("id", idExclu);
+            }
+
+            return query.uniqueResult() > 0;
         }
     }
 
@@ -58,30 +86,8 @@ public class GarantieDAO {
                 transaction.rollback();
             }
 
-            throw new RuntimeException("Erreur lors de la modification", e);
+            throw new RuntimeException("Erreur lors de la modification de la garantie.", e);
         }
     }
 
-    public void supprimer(Long id) {
-        Transaction transaction = null;
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-
-            Garantie garantie = session.get(Garantie.class, id);
-
-            if (garantie != null) {
-                session.remove(garantie);
-            }
-
-            transaction.commit();
-
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-
-            throw new RuntimeException("Erreur lors de la suppression", e);
-        }
-    }
 }

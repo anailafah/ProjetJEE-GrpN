@@ -83,16 +83,29 @@
     </style>
 </head>
 <body>
+
 <aside class="sidebar">
-    <div class="brand">GestionAssurance</div>
-    <a href="${pageContext.request.contextPath}/admin/dashboard">Tableau de bord</a>
-    <a href="${pageContext.request.contextPath}/admin/utilisateurs">Utilisateurs</a>
-    <a class="active" href="${pageContext.request.contextPath}/admin/roles">Gestion des rôles</a>
-    <a href="${pageContext.request.contextPath}/admin/types-assurance">Types d'assurance</a>
-    <a href="${pageContext.request.contextPath}/admin/contrats">Contrats</a>
-    <a href="${pageContext.request.contextPath}/admin/sinistres">Sinistres</a>
-    <a href="${pageContext.request.contextPath}/statistiques">Statistiques</a>
-    <a href="${pageContext.request.contextPath}/logout">Déconnexion</a>
+
+    <div class="brand">Gestion<span>Assurance</span></div>
+
+    <div class="menu-title">ADMINISTRATION</div>
+
+    <nav class="menu">
+        <a href="${pageContext.request.contextPath}/admin/dashboard">Tableau de bord</a>
+        <a href="${pageContext.request.contextPath}/admin/utilisateurs" class="active">Utilisateurs</a>
+        <a href="${pageContext.request.contextPath}/admin/roles">Rôles</a>
+        <a href="${pageContext.request.contextPath}/admin/types-assurance">Types d'assurance</a>
+        <a href="${pageContext.request.contextPath}/admin/contrats">Contrats</a>
+        <a href="${pageContext.request.contextPath}/admin/sinistres">Sinistres</a>
+        <a href="${pageContext.request.contextPath}/statistiques">Statistiques</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <nav class="menu">
+            <a href="${pageContext.request.contextPath}/logout" class="logout">Déconnexion</a>
+        </nav>
+    </div>
+
 </aside>
 
 <main class="main">
