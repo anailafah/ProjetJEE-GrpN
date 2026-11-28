@@ -177,7 +177,6 @@
             padding: 16px 18px;
             border-radius: 13px;
             line-height: 1.7;
-            white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
 
@@ -203,6 +202,50 @@
 
         .message p {
             font-size: 14px;
+            white-space: pre-wrap;
+        }
+
+        .chat-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .reset-button {
+            border: 1px solid #dce4f1;
+            background: white;
+            color: #344766;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .reset-button:hover {
+            background: #edf3ff;
+        }
+
+        .waiting {
+            display: none;
+            align-self: flex-start;
+            background: #f0f3f8;
+            color: #34445d;
+            padding: 14px 18px;
+            border-radius: 13px;
+            border-bottom-left-radius: 3px;
+            font-size: 14px;
+        }
+
+        .waiting::after {
+            content: "";
+            animation: points 1.2s steps(4, end) infinite;
+        }
+
+        @keyframes points {
+            0%   { content: ""; }
+            25%  { content: "."; }
+            50%  { content: ".."; }
+            75%  { content: "..."; }
         }
 
         .error-message {
@@ -347,63 +390,46 @@
 
             <div class="welcome">
                 <strong>Bonjour et bienvenue !</strong><br>
-                Je peux vous aider à comprendre les contrats,
-                les garanties, les types d'assurance, les sinistres,
-                les indemnisations et les paiements.
-                Que souhaitez-vous savoir ?
+                Je connais vos contrats, vos garanties, vos sinistres et vos paiements :
+                posez-moi vos questions sur votre dossier ou sur le fonctionnement de votre assurance.
             </div>
 
-            <h3 class="suggestions-title">Quelques questions pour commencer :</h3>
+            <c:if test="${empty conversation}">
+                <h3 class="suggestions-title">Quelques questions pour commencer :</h3>
 
-            <div class="suggestions">
-                <button type="button"
-                        onclick="poserQuestion('Quels types d’assurance proposez-vous ?')">
-                    Types d'assurance
-                </button>
+                <div class="suggestions">
+                    <button type="button" onclick="poserQuestion(this.textContent)">Quels sont mes contrats actifs ?</button>
+                    <button type="button" onclick="poserQuestion(this.textContent)">Quelles garanties possède mon assurance automobile ?</button>
+                    <button type="button" onclick="poserQuestion(this.textContent)">Comment déclarer un sinistre ?</button>
+                    <button type="button" onclick="poserQuestion(this.textContent)">Quels documents dois-je fournir pour mon sinistre ?</button>
+                    <button type="button" onclick="poserQuestion(this.textContent)">Quelle est la différence entre la garantie vol et la garantie incendie ?</button>
+                    <button type="button" onclick="poserQuestion(this.textContent)">Où en est mon dernier sinistre ?</button>
+                </div>
+            </c:if>
 
-                <button type="button"
-                        onclick="poserQuestion('Comment fonctionne une garantie ?')">
-                    Les garanties
-                </button>
+            <c:if test="${not empty conversation}">
+                <form class="chat-actions"
+                      action="${pageContext.request.contextPath}/assistant-ia"
+                      method="post">
+                    <input type="hidden" name="action" value="reinitialiser">
+                    <button type="submit" class="reset-button">Nouvelle conversation</button>
+                </form>
+            </c:if>
 
-                <button type="button"
-                        onclick="poserQuestion('Comment déclarer un sinistre ?')">
-                    Déclarer un sinistre
-                </button>
+            <div class="conversation" id="conversation">
 
-                <button type="button"
-                        onclick="poserQuestion('Comment fonctionne une indemnisation ?')">
-                    Indemnisation
-                </button>
+                <c:forEach var="message" items="${conversation}">
+                    <div class="message ${message.client ? 'user-message' : 'assistant-message'}">
+                        <strong>${message.client ? 'Vous' : 'Assistant IA'}</strong>
+                        <p><c:out value="${message.texte}"/></p>
+                    </div>
+                </c:forEach>
 
-                <button type="button"
-                        onclick="poserQuestion('Comment résilier mon contrat ?')">
-                    Résiliation
-                </button>
-
-                <button type="button"
-                        onclick="poserQuestion('Comment payer ma cotisation ?')">
-                    Paiements
-                </button>
-            </div>
-
-            <div class="conversation">
+                <div class="waiting" id="attente">L'assistant consulte votre dossier</div>
 
                 <c:if test="${not empty erreur}">
                     <div class="error-message">
                         <c:out value="${erreur}"/>
-                    </div>
-                </c:if>
-
-                <c:if test="${not empty reponse}">
-                    <div class="message user-message">
-                        <strong>Vous</strong>
-                        <p><c:out value="${question}"/></p>
-                    </div>
-
-                    <div class="message assistant-message">
-                        <strong>Assistant IA</strong>
-                        <p><c:out value="${reponse}"/></p>
                     </div>
                 </c:if>
 
@@ -413,9 +439,10 @@
 
         <div class="question-area">
 
-            <form action="${pageContext.request.contextPath}/assistant-ia"
+            <form id="formulaireQuestion"
+                  action="${pageContext.request.contextPath}/assistant-ia"
                   method="post"
-                  onsubmit="document.getElementById('envoyer').disabled=true;">
+                  onsubmit="envoiEnCours();">
 
                 <label for="question">Votre question</label>
 
@@ -423,6 +450,7 @@
                     <textarea
                         id="question"
                         name="question"
+                        maxlength="1000"
                         placeholder="Écrivez votre question ici..."
                         required><c:out value="${question}"/></textarea>
 
@@ -445,10 +473,50 @@
 </div>
 
 <script>
-    function poserQuestion(question) {
-        document.getElementById("question").value = question;
-        document.getElementById("question").focus();
+    const champQuestion = document.getElementById("question");
+    const formulaire = document.getElementById("formulaireQuestion");
+
+    const boutonEnvoyer = document.getElementById("envoyer");
+    const texteBouton = boutonEnvoyer.innerHTML;
+    const attente = document.getElementById("attente");
+
+    // Pendant l'appel à l'IA : bouton désactivé (évite un double envoi) et message d'attente visible
+    function envoiEnCours() {
+        boutonEnvoyer.disabled = true;
+        boutonEnvoyer.textContent = "Envoi…";
+        attente.style.display = "block";
+        attente.scrollIntoView({ block: "center", behavior: "smooth" });
     }
+
+    // Retour sur la page avec le bouton "Précédent" du navigateur : on réactive le formulaire
+    window.addEventListener("pageshow", function () {
+        boutonEnvoyer.disabled = false;
+        boutonEnvoyer.innerHTML = texteBouton;
+        attente.style.display = "none";
+    });
+
+    // Les boutons de suggestion envoient directement la question
+    function poserQuestion(question) {
+        champQuestion.value = question.trim();
+        envoiEnCours();
+        formulaire.submit();
+    }
+
+    // Entrée envoie la question, Maj + Entrée ajoute une ligne
+    champQuestion.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey && champQuestion.value.trim() !== "") {
+            e.preventDefault();
+            envoiEnCours();
+            formulaire.submit();
+        }
+    });
+
+    // Afficher le dernier message
+    const messages = document.querySelectorAll("#conversation .message");
+    if (messages.length > 0) {
+        messages[messages.length - 1].scrollIntoView({ block: "nearest" });
+    }
+    champQuestion.focus();
 </script>
 
 </body>
