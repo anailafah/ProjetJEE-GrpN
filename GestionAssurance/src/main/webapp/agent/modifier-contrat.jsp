@@ -150,20 +150,30 @@
 <div style="margin: 10px 0 20px 0;">
 
     <c:forEach var="garantie" items="${garanties}">
-        <c:if test="${garantie.actif}">
-            <label style="display:block; margin-bottom:10px;">
 
-                <input type="checkbox"
-                       name="garantieIds"
-                       value="${garantie.id}"
-                       style="width:auto;"
-                       ${contrat.garanties.contains(garantie) ? 'checked' : ''}>
+    <c:if test="${garantie.actif || garantiesSelectionneesIds.contains(garantie.id)}">
 
-                <c:out value="${garantie.nom}"/>
+        <label style="display:block; margin-bottom:10px;">
 
-            </label>
-        </c:if>
-    </c:forEach>
+            <input type="checkbox"
+                   name="garantieIds"
+                   value="${garantie.id}"
+                   style="width:auto;"
+                   <c:if test="${garantiesSelectionneesIds.contains(garantie.id)}">
+                       checked="checked"
+                   </c:if>>
+
+            <c:out value="${garantie.nom}"/>
+
+            <c:if test="${!garantie.actif}">
+                <span style="color:#c0392b;">(Désactivée — déjà associée)</span>
+            </c:if>
+
+        </label>
+
+    </c:if>
+
+</c:forEach>
 
 </div>
 

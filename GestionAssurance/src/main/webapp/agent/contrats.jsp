@@ -311,7 +311,8 @@ td strong { color: #14233f; }
                                 <th>Numéro</th>
                                 <th>Client</th>
                                 <th>Type d'assurance</th>
-                                <th>Date début</th>
+								<th>Garanties</th>
+								<th>Date début</th>
                                 <th>Date fin</th>
                                 <th>Montant</th>
                                 <th>Statut</th>
@@ -327,8 +328,26 @@ td strong { color: #14233f; }
                                         <c:out value="${contrat.client.prenom}"/>
                                         <c:out value="${contrat.client.nom}"/>
                                     </td>
+                                    
                                     <td><c:out value="${contrat.typeAssurance.nom}"/></td>
-                                    <td><c:out value="${contrat.dateDebut}"/></td>
+
+									<td>
+    									<c:choose>
+        									<c:when test="${not empty contrat.garanties}">
+            									<c:forEach var="garantie" items="${contrat.garanties}">
+                									<span class="badge">
+                    									<c:out value="${garantie.nom}"/>
+                									</span>
+                									<br>
+            									</c:forEach>
+        									</c:when>
+        									<c:otherwise>
+            								Aucune garantie
+        									</c:otherwise>
+    									</c:choose>
+									</td>
+
+									<td><c:out value="${contrat.dateDebut}"/></td>
                                     <td><c:out value="${contrat.dateFin}"/></td>
                                     <td><c:out value="${contrat.montant}"/> €</td>
                                     <td>
@@ -370,6 +389,22 @@ td strong { color: #14233f; }
         </button>
     </form>
 </c:if>
+
+<c:if test="${contrat.statut == 'SUSPENDU'}">
+    <form action="${pageContext.request.contextPath}/agent/reactiver-contrat"
+          method="post"
+          style="display:inline;"
+          onsubmit="return confirm('Voulez-vous vraiment réactiver ce contrat ?');">
+
+        <input type="hidden" name="id" value="${contrat.id}">
+
+        <button type="submit"
+                style="background:#198754; color:white; padding:8px 13px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">
+            Réactiver
+        </button>
+    </form>
+</c:if>
+
 <c:if test="${contrat.statut == 'EXPIRE'}">
     <form action="${pageContext.request.contextPath}/agent/renouveler-contrat"
           method="post"

@@ -68,7 +68,24 @@ public class ContratService {
             throw new IllegalArgumentException("Contrat introuvable.");
         }
 
-        verifierContrat(contrat,false);
+        // Mémoriser les garanties déjà associées
+        java.util.Set<Long> anciennesGarantiesIds = new java.util.HashSet<>();
+
+        if (existant.getGaranties() != null) {
+            for (Garantie garantie : existant.getGaranties()) {
+                anciennesGarantiesIds.add(garantie.getId());
+            }
+        }
+
+        verifierContrat(contrat, false);
+
+        // Autoriser les garanties désactivées uniquement
+        // si elles étaient déjà associées au contrat
+        verifierGarantiesModification(
+            contrat.getGaranties(),
+            anciennesGarantiesIds
+        );
+
         verifierNumeroContrat(contrat.getNumeroContrat(), contrat.getId());
 
         contratDAO.modifier(contrat);
@@ -122,8 +139,9 @@ public class ContratService {
             throw new IllegalArgumentException("Type d'assurance inexistant ou inactif.");
         }
         verifierClient(contrat.getClient().getId());
-        verifierGaranties(contrat.getGaranties());
-
+        if (creation) {
+            verifierGaranties(contrat.getGaranties());
+        }
     }
  
     private void verifierClient (Long clientId) {
@@ -292,6 +310,54 @@ public class ContratService {
 
         contratDAO.ajouter(contrat);
     }
+    
+    public void reactiver(Long id) {
 
+        Contrat contrat = contratDAO.trouverParId(id);
+
+        if (contrat == null) {
+            throw new IllegalArgumentException("Contrat introuvable.");
+        }
+
+        if (!"SUSPENDU".equalsIgnoreCase(contrat.getStatut())) {
+            throw new IllegalArgumentException(
+                "Seul un contrat suspendu peut être réactivé."
+            );
+        }
+
+        contrat.setStatut("ACTIF");
+        contratDAO.modifier(contrat);
+    }
+    private void verifierGarantiesModification(
+            List<Garantie> garanties,
+            java.util.Set<Long> anciennesGarantiesIds) {
+
+        if (garanties == null || garanties.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Un contrat doit avoir au moins une garantie."
+            );
+        }
+
+        for (Garantie garantie : garanties) {
+
+            if (garantie == null || garantie.getId() == null) {
+                throw new IllegalArgumentException("Garantie invalide.");
+            }
+
+            Garantie existante = garantieDAO.trouverParId(garantie.getId());
+
+            if (existante == null) {
+                throw new IllegalArgumentException("Garantie introuvable.");
+            }
+
+            if (!existante.isActif()
+                    && !anciennesGarantiesIds.contains(existante.getId())) {
+
+                throw new IllegalArgumentException(
+                    "Impossible d'ajouter une garantie désactivée."
+                );
+            }
+        }
+    }
 
 }
