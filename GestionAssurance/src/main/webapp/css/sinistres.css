@@ -1,0 +1,320 @@
+/* =====================================================================
+   Pages du module sinistre (client, agent, admin)
+   Reprend les couleurs et la mise en page des pages existantes :
+   - .espace-client  : en-tête comme client/mes-contrats.jsp
+   - .espace-employe : menu latéral comme agent/contrats.jsp
+   ===================================================================== */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    color: #26344d;
+}
+
+a { color: #315efb; }
+
+/* ---------- Espace client : en-tête ---------- */
+
+.espace-client header {
+    background: #17243b;
+    color: white;
+    padding: 22px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.espace-client header h2 { font-size: 22px; }
+
+.espace-client header a {
+    color: white;
+    text-decoration: none;
+    background: #34445f;
+    padding: 10px 16px;
+    border-radius: 7px;
+}
+
+.espace-client main {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+/* ---------- Espace agent / admin : menu latéral ---------- */
+
+.sidebar {
+    position: fixed;
+    width: 255px;
+    height: 100vh;
+    background: #14233f;
+    padding: 28px 18px;
+    color: white;
+}
+
+.brand { font-size: 21px; font-weight: bold; padding: 0 12px 35px; }
+.brand span { color: #75a0ff; }
+
+.menu-title { color: #8998b3; font-size: 11px; padding: 0 12px; margin-bottom: 15px; }
+
+.menu a {
+    display: block;
+    padding: 13px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    color: #bdc8db;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.menu a:hover, .menu a.active { background: #263d63; color: white; }
+.menu a.active { border-left: 3px solid #75a0ff; }
+
+.sidebar-bottom { position: absolute; bottom: 25px; left: 18px; right: 18px; }
+.logout { color: #ffb1b1 !important; }
+
+.espace-employe .main { margin-left: 255px; padding: 30px 38px; }
+
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+
+.profile {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* ---------- Commun ---------- */
+
+h1 { font-size: 26px; margin-bottom: 6px; }
+
+.sous-titre { color: #718096; font-size: 14px; margin-bottom: 25px; }
+
+.retour {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #315efb;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.carte {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    border: 1px solid #e9edf4;
+    margin-bottom: 22px;
+}
+
+.carte h2 { font-size: 18px; margin-bottom: 18px; }
+
+.carte-titre {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.carte-titre h2 { margin-bottom: 0; }
+
+.erreur, .succes {
+    padding: 13px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.erreur { background: #fee2e2; color: #b91c1c; }
+.succes { background: #dcfce7; color: #15803d; }
+
+.vide { text-align: center; padding: 45px 15px; color: #718096; }
+.vide h3 { color: #26344d; margin-bottom: 8px; }
+
+/* ---------- Tableaux ---------- */
+
+.table-container { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+
+th {
+    background: #f8f9fc;
+    color: #8290a5;
+    text-align: left;
+    padding: 14px 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+td { padding: 14px 12px; border-bottom: 1px solid #edf0f5; font-size: 13px; }
+
+td strong { color: #14233f; }
+
+/* ---------- Badges de statut ---------- */
+
+.badge {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    background: #edf2ff;
+    color: #315efb;
+    white-space: nowrap;
+}
+
+.statut-DECLARE    { background: #edf2ff; color: #315efb; }
+.statut-EN_ANALYSE { background: #fff2dc; color: #a56800; }
+.statut-ACCEPTE    { background: #e5f8ee; color: #16834b; }
+.statut-REFUSE     { background: #ffe8e8; color: #c03939; }
+.statut-INDEMNISE  { background: #ece7ff; color: #5b3fc4; }
+
+/* ---------- Boutons ---------- */
+
+.btn {
+    display: inline-block;
+    background: #1769aa;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 7px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn:hover { background: #104d80; }
+.btn-secondaire { background: #e5e7eb; color: #26344d; }
+.btn-secondaire:hover { background: #d1d5db; }
+.btn-petit { padding: 7px 12px; font-size: 12px; }
+.btn-vert { background: #16834b; }
+.btn-vert:hover { background: #0f6a3b; }
+
+/* ---------- Formulaires ---------- */
+
+.formulaire { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; }
+
+.champ { display: flex; flex-direction: column; gap: 7px; }
+.champ-large { grid-column: 1 / -1; }
+
+label { font-size: 13px; font-weight: bold; color: #3b4a63; }
+
+input[type="text"], input[type="date"], input[type="number"], input[type="file"],
+select, textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d6dce6;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 14px;
+    background: white;
+}
+
+textarea { min-height: 110px; resize: vertical; }
+
+input:focus, select:focus, textarea:focus { outline: 2px solid #b9cdfd; border-color: #315efb; }
+
+.aide { font-size: 12px; color: #8290a5; }
+
+.actions-formulaire { grid-column: 1 / -1; display: flex; gap: 12px; margin-top: 5px; }
+
+.filtres { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.filtres input[type="text"] { flex: 1; min-width: 220px; }
+.filtres select { width: auto; min-width: 180px; }
+
+/* ---------- Pastilles de comptage ---------- */
+
+.pastilles { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+
+.pastille {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid #e9edf4;
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #26344d;
+    font-size: 13px;
+}
+
+.pastille strong { font-size: 18px; }
+.pastille.active { border-color: #315efb; box-shadow: 0 0 0 2px #dbe5ff; }
+
+/* ---------- Détail d'un sinistre ---------- */
+
+.grille-detail { display: grid; grid-template-columns: 2fr 1fr; gap: 22px; align-items: start; }
+
+.infos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 22px; }
+
+.info span { display: block; font-size: 11px; color: #8290a5; text-transform: uppercase; margin-bottom: 5px; }
+.info p { font-size: 14px; }
+
+.description {
+    grid-column: 1 / -1;
+    background: #f8f9fc;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.liste-documents { list-style: none; }
+
+.liste-documents li {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid #edf0f5;
+    font-size: 13px;
+}
+
+.liste-documents li:last-child { border-bottom: none; }
+
+.commentaire { border-left: 3px solid #75a0ff; padding: 4px 0 4px 14px; margin-bottom: 16px; }
+.commentaire .auteur { font-size: 12px; color: #8290a5; margin-bottom: 5px; }
+.commentaire p { font-size: 14px; line-height: 1.5; white-space: pre-line; }
+
+/* Étapes du dossier (DECLARE -> EN_ANALYSE -> ACCEPTE/REFUSE -> INDEMNISE) */
+.etapes { display: flex; gap: 6px; margin-bottom: 22px; flex-wrap: wrap; }
+
+.etape {
+    flex: 1;
+    min-width: 110px;
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    background: #eef1f6;
+    color: #9aa5b8;
+}
+
+.etape.faite { background: #dbe5ff; color: #315efb; }
+.etape.courante { background: #315efb; color: white; }
+.etape.refus { background: #c03939; color: white; }
+
+.montant-indemnise { font-size: 22px; font-weight: bold; color: #5b3fc4; }
+
+/* ---------- Petits écrans ---------- */
+
+@media (max-width: 900px) {
+    .grille-detail, .formulaire, .infos { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 750px) {
+    .sidebar { width: 75px; padding: 20px 8px; }
+    .brand { font-size: 0; padding: 10px 5px 30px; }
+    .brand span { font-size: 20px; }
+    .menu-title { display: none; }
+    .menu a { font-size: 0; text-align: center; }
+    .espace-employe .main { margin-left: 75px; padding: 20px 14px; }
+}
