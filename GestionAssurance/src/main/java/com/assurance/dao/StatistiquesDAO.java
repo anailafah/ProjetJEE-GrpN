@@ -34,15 +34,6 @@ public class StatistiquesDAO {
             stats.setNombreUtilisateurs(
                 compter(conn, "SELECT COUNT(*) FROM utilisateurs"));
 
-            stats.setNombrePaiements(
-                compter(conn, "SELECT COUNT(*) FROM paiements"));
-
-            // Échéances dont la date est passée et qui ne sont pas payées
-            stats.setEcheancesImpayees(
-                compter(conn,
-                    "SELECT COUNT(*) FROM echeances "
-                    + "WHERE statut <> 'PAYEE' AND date_echeance < CURDATE()"));
-
             // Statistiques clients
             stats.setNombreClients(
                 compter(conn,
@@ -73,8 +64,16 @@ public class StatistiquesDAO {
                 compter(conn, "SELECT COUNT(*) FROM sinistres"));
 
             stats.setSinistresEnAttente(
+                compter(conn, "SELECT COUNT(*) FROM sinistres WHERE statut IN ('DECLARE', 'EN_ANALYSE')"));
+
+            // Paiements et échéances
+            // (échéances impayées : date passée et toujours dues ; les ANNULEE ne comptent pas)
+            stats.setNombrePaiements(
+                compter(conn, "SELECT COUNT(*) FROM paiements"));
+
+            stats.setEcheancesImpayees(
                 compter(conn,
-                    "SELECT COUNT(*) FROM sinistres WHERE statut IN ('DECLARE', 'EN_ANALYSE')"));
+                        "SELECT COUNT(*) FROM echeances WHERE statut IN ('EN_ATTENTE', 'EN_RETARD') AND date_echeance < CURDATE()"));
 
             // Statistiques financières
             stats.setMontantTotalPaiements(
