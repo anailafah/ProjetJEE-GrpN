@@ -1,5 +1,7 @@
 package com.assurance.controller.agent;
 import jakarta.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.Set;
 
 import java.io.IOException;
 import java.util.List;
@@ -75,6 +77,15 @@ public class ModifierContratServlet extends HttpServlet {
             request.setAttribute("types", typeService.lister());
             request.setAttribute("garanties", garantieService.lister());
 
+            Set<Long> garantiesSelectionneesIds = new HashSet<>();
+
+            if (contrat.getGaranties() != null) {
+                for (Garantie garantie : contrat.getGaranties()) {
+                    garantiesSelectionneesIds.add(garantie.getId());
+                }
+            }
+
+            request.setAttribute("garantiesSelectionneesIds", garantiesSelectionneesIds);
             request.getRequestDispatcher(
                     "/agent/modifier-contrat.jsp")
                     .forward(request, response);
@@ -135,19 +146,44 @@ public class ModifierContratServlet extends HttpServlet {
                 }
 
                 List<Garantie> garanties = new ArrayList<>();
+                Set<Long> idsSelectionnes = new HashSet<>();
 
+                // Récupérer les garanties sélectionnées dans le formulaire
                 if (garantieIds != null) {
                     for (String garantieId : garantieIds) {
-                        Garantie garantie = session.get(
-                                Garantie.class,
-                                Long.parseLong(garantieId));
+                        Long idGarantie = Long.parseLong(garantieId);
+
+                        // Éviter les doublons
+                        if (!idsSelectionnes.add(idGarantie)) {
+                            continue;
+                        }
+
+                        Garantie garantie = session.get(Garantie.class, idGarantie);
 
                         if (garantie == null) {
-                            throw new IllegalArgumentException(
-                                    "Garantie introuvable.");
+                            throw new IllegalArgumentException("Garantie introuvable.");
                         }
 
                         garanties.add(garantie);
+                    }
+                }
+
+                // Conserver les garanties désactivées déjà associées au contrat
+                if (contrat.getGaranties() != null) {
+                    for (Garantie ancienne : contrat.getGaranties()) {
+
+                        if (!ancienne.isActif()
+                                && !idsSelectionnes.contains(ancienne.getId())) {
+
+                            Garantie garantie = session.get(
+                                Garantie.class,
+                                ancienne.getId()
+                            );
+
+                            if (garantie != null) {
+                                garanties.add(garantie);
+                            }
+                        }
                     }
                 }
 
