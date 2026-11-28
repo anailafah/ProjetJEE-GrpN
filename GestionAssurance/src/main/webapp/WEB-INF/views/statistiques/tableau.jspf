@@ -1,0 +1,252 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
+<%-- Tableau de statistiques partagé entre l'espace admin (admin/dashboard.jsp)
+     et l'espace agent (agent/statistiques.jsp).
+     Attend un attribut de requête "statistiques" (com.assurance.model.Statistiques). --%>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tableau-statistiques.css">
+<fmt:setLocale value="fr_FR"/>
+
+<c:set var="st" value="${statistiques}"/>
+<c:set var="resultat" value="${st.chiffreAffaires - st.montantIndemnisations}"/>
+
+<!-- CLIENTS -->
+<h2 class="st-section-title">Clients</h2>
+<section class="st-grid">
+    <div class="st-card">
+        <div class="st-label">Nombre total de clients</div>
+        <div class="st-value"><c:out value="${st.nombreClients}" default="0"/></div>
+        <div class="st-description">Clients enregistrés</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Nouveaux clients</div>
+        <div class="st-value"><c:out value="${st.nouveauxClients}" default="0"/></div>
+        <div class="st-description">Inscrits durant les 30 derniers jours</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Utilisateurs</div>
+        <div class="st-value"><c:out value="${st.nombreUtilisateurs}" default="0"/></div>
+        <div class="st-description">Clients, agents et administrateurs</div>
+    </div>
+</section>
+
+<!-- CONTRATS -->
+<h2 class="st-section-title">Contrats</h2>
+<section class="st-grid">
+    <div class="st-card">
+        <div class="st-label">Total des contrats</div>
+        <div class="st-value"><c:out value="${st.nombreContrats}" default="0"/></div>
+        <div class="st-description">Tous statuts confondus</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Contrats actifs</div>
+        <div class="st-value"><c:out value="${st.contratsActifs}" default="0"/></div>
+        <div class="st-description">Actuellement en vigueur</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Contrats expirés</div>
+        <div class="st-value"><c:out value="${st.contratsExpires}" default="0"/></div>
+        <div class="st-description">Arrivés à échéance</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Contrats résiliés</div>
+        <div class="st-value"><c:out value="${st.contratsResilies}" default="0"/></div>
+        <div class="st-description">Résiliés avant leur terme</div>
+    </div>
+</section>
+
+<!-- SINISTRES ET PAIEMENTS -->
+<h2 class="st-section-title">Sinistres et paiements</h2>
+<section class="st-grid">
+    <div class="st-card">
+        <div class="st-label">Sinistres déclarés</div>
+        <div class="st-value"><c:out value="${st.nombreSinistres}" default="0"/></div>
+        <div class="st-description">Depuis l'ouverture</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Sinistres en attente</div>
+        <div class="st-value"><c:out value="${st.sinistresEnAttente}" default="0"/></div>
+        <div class="st-description">Déclarés ou en analyse</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Paiements enregistrés</div>
+        <div class="st-value"><c:out value="${st.nombrePaiements}" default="0"/></div>
+        <div class="st-description">Tous statuts confondus</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Échéances impayées</div>
+        <div class="st-value ${st.echeancesImpayees > 0 ? 'st-negatif' : ''}">
+            <c:out value="${st.echeancesImpayees}" default="0"/>
+        </div>
+        <div class="st-description">Date dépassée, non payées</div>
+    </div>
+</section>
+
+<!-- FINANCES -->
+<h2 class="st-section-title">Statistiques financières</h2>
+<section class="st-grid">
+    <div class="st-card">
+        <div class="st-label">Chiffre d'affaires</div>
+        <div class="st-value">
+            <fmt:formatNumber value="${st.chiffreAffaires}" pattern="#,##0.00"/> €
+        </div>
+        <div class="st-description">Paiements effectués</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Montant des primes</div>
+        <div class="st-value">
+            <fmt:formatNumber value="${st.montantPrimes}" pattern="#,##0.00"/> €
+        </div>
+        <div class="st-description">Primes des contrats actifs</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Indemnisations versées</div>
+        <div class="st-value">
+            <fmt:formatNumber value="${st.montantIndemnisations}" pattern="#,##0.00"/> €
+        </div>
+        <div class="st-description">Sinistres indemnisés</div>
+    </div>
+    <div class="st-card">
+        <div class="st-label">Résultat</div>
+        <div class="st-value ${resultat >= 0 ? 'st-positif' : 'st-negatif'}">
+            <fmt:formatNumber value="${resultat}" pattern="#,##0.00"/> €
+        </div>
+        <div class="st-description">Chiffre d'affaires − indemnisations</div>
+    </div>
+</section>
+
+<!-- GRAPHIQUES -->
+<h2 class="st-section-title">Analyse et évolution</h2>
+<section class="st-charts">
+    <div class="st-chart-card">
+        <h3>Contrats par type d'assurance</h3>
+        <div class="st-chart-container"><canvas id="stContratsType"></canvas></div>
+    </div>
+    <div class="st-chart-card">
+        <h3>Répartition des clients par type d'assurance</h3>
+        <div class="st-chart-container"><canvas id="stClientsType"></canvas></div>
+    </div>
+    <div class="st-chart-card">
+        <h3>Sinistres par statut</h3>
+        <div class="st-chart-container"><canvas id="stSinistresStatut"></canvas></div>
+    </div>
+    <div class="st-chart-card">
+        <h3>Évolution du nombre de contrats (6 derniers mois)</h3>
+        <div class="st-chart-container"><canvas id="stContratsMois"></canvas></div>
+    </div>
+    <div class="st-chart-card st-full">
+        <h3>Évolution des revenus (6 derniers mois)</h3>
+        <div class="st-chart-container"><canvas id="stRevenusMois"></canvas></div>
+    </div>
+</section>
+
+<!-- Données des graphiques (lues par le script ci-dessous) -->
+<div hidden>
+    <div id="stDonneesContratsType">
+        <c:forEach var="item" items="${st.contratsParType}">
+            <span data-label="<c:out value='${item.key}'/>" data-value="${item.value}"></span>
+        </c:forEach>
+    </div>
+    <div id="stDonneesClientsType">
+        <c:forEach var="item" items="${st.clientsParType}">
+            <span data-label="<c:out value='${item.key}'/>" data-value="${item.value}"></span>
+        </c:forEach>
+    </div>
+    <div id="stDonneesSinistresStatut">
+        <c:forEach var="item" items="${st.sinistresParStatut}">
+            <span data-label="<c:out value='${item.key}'/>" data-value="${item.value}"></span>
+        </c:forEach>
+    </div>
+    <div id="stDonneesContratsMois">
+        <c:forEach var="item" items="${st.contratsParMois}">
+            <span data-label="<c:out value='${item.key}'/>" data-value="${item.value}"></span>
+        </c:forEach>
+    </div>
+    <div id="stDonneesRevenusMois">
+        <c:forEach var="item" items="${st.revenusParMois}">
+            <span data-label="<c:out value='${item.key}'/>" data-value="${item.value}"></span>
+        </c:forEach>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function () {
+    const BLEU = "#315efb";
+    const COULEURS = ["#315efb", "#18a999", "#f4b942", "#e76f51", "#8067dc", "#49a6d8"];
+
+    function lire(id) {
+        const elements = document.querySelectorAll("#" + id + " span");
+        return {
+            labels: Array.from(elements).map(e => e.dataset.label),
+            valeurs: Array.from(elements).map(e => Number(e.dataset.value))
+        };
+    }
+
+    const echelleEntiers = { y: { beginAtZero: true, ticks: { precision: 0 } } };
+    const sansLegende = { legend: { display: false } };
+
+    function courbe(id, donnees, libelle, options) {
+        new Chart(document.getElementById(id), {
+            type: "line",
+            data: {
+                labels: donnees.labels,
+                datasets: [{
+                    label: libelle,
+                    data: donnees.valeurs,
+                    borderColor: BLEU,
+                    backgroundColor: "rgba(49,94,251,.12)",
+                    fill: true,
+                    tension: .35,
+                    pointRadius: 4
+                }]
+            },
+            options: Object.assign({ responsive: true, maintainAspectRatio: false, plugins: sansLegende }, options)
+        });
+    }
+
+    function barres(id, donnees, libelle, horizontal) {
+        new Chart(document.getElementById(id), {
+            type: "bar",
+            data: {
+                labels: donnees.labels,
+                datasets: [{ label: libelle, data: donnees.valeurs, backgroundColor: BLEU, borderRadius: 6 }]
+            },
+            options: {
+                indexAxis: horizontal ? "y" : "x",
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: sansLegende,
+                scales: horizontal
+                    ? { x: { beginAtZero: true, ticks: { precision: 0 } } }
+                    : echelleEntiers
+            }
+        });
+    }
+
+    const types = lire("stDonneesContratsType");
+    new Chart(document.getElementById("stContratsType"), {
+        type: "doughnut",
+        data: {
+            labels: types.labels,
+            datasets: [{ data: types.valeurs, backgroundColor: COULEURS, borderWidth: 0 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+    });
+
+    barres("stClientsType", lire("stDonneesClientsType"), "Nombre de clients", true);
+    barres("stSinistresStatut", lire("stDonneesSinistresStatut"), "Nombre de sinistres", false);
+    courbe("stContratsMois", lire("stDonneesContratsMois"), "Nouveaux contrats", { scales: echelleEntiers });
+
+    const euros = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+    courbe("stRevenusMois", lire("stDonneesRevenusMois"), "Revenus", {
+        scales: { y: { beginAtZero: true, ticks: { callback: v => euros.format(v) } } },
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: c => euros.format(c.parsed.y) } }
+        }
+    });
+})();
+</script>

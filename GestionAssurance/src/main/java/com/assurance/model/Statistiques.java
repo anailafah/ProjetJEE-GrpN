@@ -1,23 +1,45 @@
 package com.assurance.model;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Indicateurs affichés dans les tableaux de bord (admin et agent).
+ * Rempli par StatistiquesDAO.
+ */
 public class Statistiques {
 
+    // Indicateurs généraux
     private int nombreUtilisateurs;
-    private int nombreClients;
-    private int nombreContrats;
-    private int contratsActifs;
-    private int nombreSinistres;
-    private int sinistresEnAttente;
     private int nombrePaiements;
-    private double montantTotalPaiements;
     private int echeancesImpayees;
 
+    // Statistiques clients
+    private int nombreClients;
+    private int nouveauxClients;          // inscrits durant les 30 derniers jours
+
+    // Statistiques contrats
+    private int nombreContrats;
+    private int contratsActifs;
+    private int contratsExpires;
+    private int contratsResilies;
+
+    // Statistiques sinistres
+    private int nombreSinistres;
+    private int sinistresEnAttente;
+
+    // Statistiques financières
+    private double montantTotalPaiements; // tous paiements confondus
+    private double chiffreAffaires;       // paiements effectués
+    private double montantPrimes;         // primes des contrats actifs
+    private double montantIndemnisations; // sinistres indemnisés
+
     // Données des graphiques
-    private Map<String, Integer> contratsParType;
-    private Map<String, Integer> contratsParMois;
-    private Map<String, Integer> sinistresParStatut;
+    private Map<String, Integer> contratsParType = new LinkedHashMap<>();
+    private Map<String, Integer> clientsParType = new LinkedHashMap<>();
+    private Map<String, Integer> contratsParMois = new LinkedHashMap<>();
+    private Map<String, Integer> sinistresParStatut = new LinkedHashMap<>();
+    private Map<String, Double> revenusParMois = new LinkedHashMap<>();
 
     public Statistiques() {
     }
@@ -30,12 +52,36 @@ public class Statistiques {
         this.nombreUtilisateurs = nombreUtilisateurs;
     }
 
+    public int getNombrePaiements() {
+        return nombrePaiements;
+    }
+
+    public void setNombrePaiements(int nombrePaiements) {
+        this.nombrePaiements = nombrePaiements;
+    }
+
+    public int getEcheancesImpayees() {
+        return echeancesImpayees;
+    }
+
+    public void setEcheancesImpayees(int echeancesImpayees) {
+        this.echeancesImpayees = echeancesImpayees;
+    }
+
     public int getNombreClients() {
         return nombreClients;
     }
 
     public void setNombreClients(int nombreClients) {
         this.nombreClients = nombreClients;
+    }
+
+    public int getNouveauxClients() {
+        return nouveauxClients;
+    }
+
+    public void setNouveauxClients(int nouveauxClients) {
+        this.nouveauxClients = nouveauxClients;
     }
 
     public int getNombreContrats() {
@@ -54,6 +100,22 @@ public class Statistiques {
         this.contratsActifs = contratsActifs;
     }
 
+    public int getContratsExpires() {
+        return contratsExpires;
+    }
+
+    public void setContratsExpires(int contratsExpires) {
+        this.contratsExpires = contratsExpires;
+    }
+
+    public int getContratsResilies() {
+        return contratsResilies;
+    }
+
+    public void setContratsResilies(int contratsResilies) {
+        this.contratsResilies = contratsResilies;
+    }
+
     public int getNombreSinistres() {
         return nombreSinistres;
     }
@@ -70,14 +132,6 @@ public class Statistiques {
         this.sinistresEnAttente = sinistresEnAttente;
     }
 
-    public int getNombrePaiements() {
-        return nombrePaiements;
-    }
-
-    public void setNombrePaiements(int nombrePaiements) {
-        this.nombrePaiements = nombrePaiements;
-    }
-
     public double getMontantTotalPaiements() {
         return montantTotalPaiements;
     }
@@ -86,12 +140,28 @@ public class Statistiques {
         this.montantTotalPaiements = montantTotalPaiements;
     }
 
-    public int getEcheancesImpayees() {
-        return echeancesImpayees;
+    public double getChiffreAffaires() {
+        return chiffreAffaires;
     }
 
-    public void setEcheancesImpayees(int echeancesImpayees) {
-        this.echeancesImpayees = echeancesImpayees;
+    public void setChiffreAffaires(double chiffreAffaires) {
+        this.chiffreAffaires = chiffreAffaires;
+    }
+
+    public double getMontantPrimes() {
+        return montantPrimes;
+    }
+
+    public void setMontantPrimes(double montantPrimes) {
+        this.montantPrimes = montantPrimes;
+    }
+
+    public double getMontantIndemnisations() {
+        return montantIndemnisations;
+    }
+
+    public void setMontantIndemnisations(double montantIndemnisations) {
+        this.montantIndemnisations = montantIndemnisations;
     }
 
     public Map<String, Integer> getContratsParType() {
@@ -100,6 +170,14 @@ public class Statistiques {
 
     public void setContratsParType(Map<String, Integer> contratsParType) {
         this.contratsParType = contratsParType;
+    }
+
+    public Map<String, Integer> getClientsParType() {
+        return clientsParType;
+    }
+
+    public void setClientsParType(Map<String, Integer> clientsParType) {
+        this.clientsParType = clientsParType;
     }
 
     public Map<String, Integer> getContratsParMois() {
@@ -116,5 +194,13 @@ public class Statistiques {
 
     public void setSinistresParStatut(Map<String, Integer> sinistresParStatut) {
         this.sinistresParStatut = sinistresParStatut;
+    }
+
+    public Map<String, Double> getRevenusParMois() {
+        return revenusParMois;
+    }
+
+    public void setRevenusParMois(Map<String, Double> revenusParMois) {
+        this.revenusParMois = revenusParMois;
     }
 }
