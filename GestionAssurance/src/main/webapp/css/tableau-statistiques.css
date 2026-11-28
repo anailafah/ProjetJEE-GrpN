@@ -1,0 +1,83 @@
+/* Tableau de statistiques partagé (admin/dashboard.jsp et agent/statistiques.jsp).
+   Classes préfixées "st-" pour ne pas entrer en conflit avec le style des pages. */
+
+.st-section-title {
+    font-size: 17px;
+    font-weight: bold;
+    margin: 0 0 17px;
+    color: #14233f;
+}
+
+.st-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 17px;
+    margin-bottom: 30px;
+}
+
+.st-card {
+    background: #ffffff;
+    border: 1px solid #e9edf4;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 4px 14px rgba(25, 45, 80, .03);
+    min-width: 0;
+}
+
+.st-label {
+    color: #8290a5;
+    font-size: 12px;
+    margin-bottom: 14px;
+}
+
+.st-value {
+    color: #14233f;
+    font-size: 25px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.st-value.st-positif { color: #18a999; }
+.st-value.st-negatif { color: #e76f51; }
+
+.st-description {
+    color: #9aa5b5;
+    font-size: 11px;
+    margin-top: 9px;
+}
+
+.st-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.st-chart-card {
+    background: #ffffff;
+    border: 1px solid #e9edf4;
+    border-radius: 14px;
+    padding: 23px;
+    min-width: 0;
+}
+
+.st-chart-card h3 {
+    font-size: 14px;
+    margin: 0 0 20px;
+    color: #26344d;
+}
+
+.st-chart-container {
+    height: 270px;
+    position: relative;
+}
+
+.st-full {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 1100px) {
+    .st-charts { grid-template-columns: 1fr; }
+}
