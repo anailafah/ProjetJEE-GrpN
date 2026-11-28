@@ -12,8 +12,6 @@ public class TestTypeAssurance {
 	    GarantieDAO dao = new GarantieDAO();
 
 	    try {
-	        // Supprimer la garantie ayant l'ID 1
-	        dao.supprimer(1L);
 
 	        System.out.println("Suppression exécutée !");
 

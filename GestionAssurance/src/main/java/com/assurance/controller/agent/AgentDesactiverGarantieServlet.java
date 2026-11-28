@@ -25,6 +25,7 @@ public class AgentDesactiverGarantieServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
+        // Vérifier que l'utilisateur est un agent
         if (session == null ||
             !"AGENT".equalsIgnoreCase(
                 String.valueOf(session.getAttribute("role")))) {
@@ -34,25 +35,48 @@ public class AgentDesactiverGarantieServlet extends HttpServlet {
         }
 
         try {
-            Long id = Long.parseLong(request.getParameter("id"));
+
+            String idParam = request.getParameter("id");
+
+            if (idParam == null || idParam.trim().isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Identifiant de garantie manquant."
+                );
+            }
+
+            Long id = Long.parseLong(idParam);
 
             garantieService.desactiver(id);
 
-            session.setAttribute("messageSucces",
-                    "Garantie désactivée avec succès !");
+            session.setAttribute(
+                "messageSucces",
+                "Garantie désactivée avec succès !"
+            );
+
+        } catch (NumberFormatException e) {
+
+            session.setAttribute(
+                "messageErreur",
+                "Identifiant de garantie invalide."
+            );
 
         } catch (IllegalArgumentException e) {
 
-            session.setAttribute("messageErreur",
-                    "Désactivation impossible : " + e.getMessage());
+            session.setAttribute(
+                "messageErreur",
+                "Désactivation impossible : " + e.getMessage()
+            );
 
         } catch (Exception e) {
 
-            session.setAttribute("messageErreur",
-                    "Une erreur est survenue lors de la désactivation.");
+            session.setAttribute(
+                "messageErreur",
+                "Une erreur est survenue lors de la désactivation."
+            );
         }
 
         response.sendRedirect(
-                request.getContextPath() + "/agent/garanties");
+            request.getContextPath() + "/agent/garanties"
+        );
     }
 }
