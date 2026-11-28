@@ -50,7 +50,20 @@ public class Sinistre {
     @JoinColumn(name = "contrat_id", nullable = false)
     private Contrat contrat;
 
+    // Garantie du contrat utilisée pour l'indemnisation (vide tant que le sinistre n'est pas indemnisé)
+    @ManyToOne
+    @JoinColumn(name = "garantie_id")
+    private Garantie garantie;
+
     public Sinistre() {
+    }
+
+    public Garantie getGarantie() {
+        return garantie;
+    }
+
+    public void setGarantie(Garantie garantie) {
+        this.garantie = garantie;
     }
 
     public Long getId() {

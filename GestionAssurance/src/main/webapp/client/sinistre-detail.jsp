@@ -105,6 +105,17 @@
                 <div class="carte">
                     <h2>Indemnisation</h2>
                     <p class="montant-indemnise">${sinistre.montantIndemnisation} €</p>
+                    <c:if test="${not empty sinistre.garantie}">
+                        <p class="aide" style="margin-top:6px;">
+                            Au titre de la garantie « <c:out value="${sinistre.garantie.nom}"/> ».
+                        </p>
+                    </c:if>
+                    <c:if test="${not empty sinistre.montantDemande and sinistre.montantIndemnisation lt sinistre.montantDemande}">
+                        <p class="aide" style="margin-top:6px;">
+                            Montant demandé : ${sinistre.montantDemande} €.
+                            Le motif est indiqué dans le suivi de votre dossier.
+                        </p>
+                    </c:if>
                 </div>
             </c:if>
 

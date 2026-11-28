@@ -2,7 +2,11 @@ package com.assurance.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.assurance.model.Garantie;
 import com.assurance.model.Sinistre;
 import com.assurance.model.StatutSinistre;
 import com.assurance.service.SinistreService;
@@ -67,6 +71,20 @@ public class DetailSinistreEmployeServlet extends HttpServlet {
         request.setAttribute("commentaires", sinistreService.listerCommentaires(sinistreId));
         request.setAttribute("statutsPossibles", sinistreService.statutsPossibles(sinistre.getStatut()));
 
+        // Garanties du contrat et montant proposé pour chacune (min entre demande et plafond),
+        // utilisés par le formulaire d'indemnisation quand le sinistre est accepté
+        if (sinistre.getStatut() == StatutSinistre.ACCEPTE) {
+            List<Garantie> garanties = sinistreService.garantiesDuContrat(sinistre);
+            Map<Long, BigDecimal> montantsProposes = new HashMap<>();
+
+            for (Garantie garantie : garanties) {
+                montantsProposes.put(garantie.getId(), sinistreService.montantPropose(sinistre, garantie));
+            }
+
+            request.setAttribute("garanties", garanties);
+            request.setAttribute("montantsProposes", montantsProposes);
+        }
+
         request.getRequestDispatcher("/WEB-INF/views/sinistres/detail.jsp").forward(request, response);
     }
 
@@ -124,8 +142,12 @@ public class DetailSinistreEmployeServlet extends HttpServlet {
                 ControleAcces.memoriserMessage(request, "Commentaire ajouté.");
 
             } else if ("indemniser".equals(action)) {
+                Long garantieId = ControleAcces.lireId(request.getParameter("garantieId"));
                 BigDecimal montant = lireMontant(request.getParameter("montant"));
-                sinistreService.indemniser(sinistreId, montant);
+
+                sinistreService.indemniser(sinistreId, garantieId, montant,
+                        request.getParameter("motif"), agentId);
+
                 ControleAcces.memoriserMessage(request, "Indemnisation de " + montant + " € enregistrée.");
 
             } else {

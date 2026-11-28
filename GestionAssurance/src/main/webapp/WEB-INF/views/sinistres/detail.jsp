@@ -80,6 +80,9 @@
                             <c:choose>
                                 <c:when test="${not empty sinistre.montantIndemnisation}">
                                     <strong>${sinistre.montantIndemnisation} €</strong>
+                                    <c:if test="${not empty sinistre.garantie}">
+                                        <br><span class="aide">Garantie « <c:out value="${sinistre.garantie.nom}"/> »</span>
+                                    </c:if>
                                 </c:when>
                                 <c:otherwise>-</c:otherwise>
                             </c:choose>
@@ -136,23 +139,104 @@
 
                     <c:choose>
                         <%-- Accepté : il reste à saisir l'indemnisation --%>
+                        <c:when test="${sinistre.statut == 'ACCEPTE' and empty garanties}">
+                            <div class="erreur" style="margin-bottom:0;">
+                                Le contrat de ce client ne comporte aucune garantie :
+                                ce sinistre ne peut pas être indemnisé.
+                                Ajoutez une garantie au contrat dans « Contrats ».
+                            </div>
+                        </c:when>
+
                         <c:when test="${sinistre.statut == 'ACCEPTE'}">
                             <form action="${ctx}/agent/sinistre" method="post">
                                 <input type="hidden" name="id" value="${sinistre.id}">
                                 <input type="hidden" name="action" value="indemniser">
 
                                 <div class="champ">
+                                    <label for="garantieId">Garantie qui couvre le sinistre</label>
+                                    <select id="garantieId" name="garantieId" required>
+                                        <c:forEach var="g" items="${garanties}" varStatus="etat">
+                                            <option value="${g.id}"
+                                                    data-plafond="${g.montantCouverture}"
+                                                    data-propose="${montantsProposes[g.id]}"
+                                                    ${etat.first ? 'selected' : ''}>
+                                                <c:out value="${g.nom}"/> -
+                                                <c:choose>
+                                                    <c:when test="${not empty g.montantCouverture}">plafond ${g.montantCouverture} €</c:when>
+                                                    <c:otherwise>sans plafond</c:otherwise>
+                                                </c:choose>
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <div class="champ" style="margin-top:12px;">
                                     <label for="montant">Montant d'indemnisation (€)</label>
                                     <input type="number" id="montant" name="montant"
                                            min="0.01" step="0.01" required
-                                           value="${sinistre.montantDemande}">
-                                    <span class="aide">Le sinistre passera au statut « Indemnisé ».</span>
+                                           data-demande="${sinistre.montantDemande}"
+                                           value="${montantsProposes[garanties[0].id]}">
+                                    <span class="aide" id="aideMontant">
+                                        Demandé par le client : ${sinistre.montantDemande} €.
+                                        Le montant ne peut dépasser ni la demande ni le plafond de la garantie.
+                                    </span>
+                                </div>
+
+                                <div class="champ" style="margin-top:12px;">
+                                    <label for="motifIndemnisation">
+                                        Motif <span id="motifObligatoire">(obligatoire si le montant est inférieur à la demande)</span>
+                                    </label>
+                                    <textarea id="motifIndemnisation" name="motif" maxlength="1500"
+                                              placeholder="Ex. plafond de la garantie atteint, vétusté, rapport d'expertise..."></textarea>
+                                    <span class="aide">Le motif sera visible par le client dans le suivi de son dossier.</span>
                                 </div>
 
                                 <button type="submit" class="btn btn-vert" style="margin-top:12px;">
                                     Enregistrer l'indemnisation
                                 </button>
                             </form>
+
+                            <%-- Aide à la saisie : met à jour le montant proposé et le maximum selon la garantie choisie,
+                                 et rend le motif obligatoire pour un remboursement partiel.
+                                 Les vraies vérifications restent faites côté serveur (SinistreService). --%>
+                            <script>
+                                (function () {
+                                    var choix = document.getElementById('garantieId');
+                                    var montant = document.getElementById('montant');
+                                    var motif = document.getElementById('motifIndemnisation');
+                                    var demande = parseFloat(montant.dataset.demande);
+
+                                    function majMaximum() {
+                                        var option = choix.options[choix.selectedIndex];
+                                        var plafond = parseFloat(option.dataset.plafond);
+                                        var max = [demande, plafond].filter(function (v) { return !isNaN(v); });
+                                        if (max.length) {
+                                            montant.max = Math.min.apply(null, max);
+                                        } else {
+                                            montant.removeAttribute('max');
+                                        }
+                                    }
+
+                                    function majMotif() {
+                                        var valeur = parseFloat(montant.value);
+                                        motif.required = !isNaN(demande) && !isNaN(valeur) && valeur < demande;
+                                    }
+
+                                    choix.addEventListener('change', function () {
+                                        var propose = choix.options[choix.selectedIndex].dataset.propose;
+                                        if (propose) {
+                                            montant.value = propose;
+                                        }
+                                        majMaximum();
+                                        majMotif();
+                                    });
+
+                                    montant.addEventListener('input', majMotif);
+
+                                    majMaximum();
+                                    majMotif();
+                                })();
+                            </script>
                         </c:when>
 
                         <%-- Déclaré / En analyse : changement de statut --%>
