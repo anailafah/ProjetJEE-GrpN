@@ -1,9 +1,16 @@
 package com.assurance.controller.client;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.assurance.model.Contrat;
 import com.assurance.service.ContratService;
+import com.assurance.model.Echeance;
+import com.assurance.service.EcheanceService;
+import com.assurance.service.PaiementService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,6 +25,8 @@ public class DetailsContratServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private ContratService contratService = new ContratService();
+    private EcheanceService echeanceService = new EcheanceService();
+    private PaiementService paiementService = new PaiementService();
 
     @Override
     protected void doGet(HttpServletRequest request,
@@ -67,6 +76,13 @@ public class DetailsContratServlet extends HttpServlet {
             }
 
             request.setAttribute("contrat", contrat);
+            List<Echeance> echeances = echeanceService.listerParContrat(contratId);
+            Map<Long, BigDecimal> restes = new HashMap<>();
+            for (Echeance e : echeances) {
+                restes.put(e.getId(), paiementService.resteAPayer(e));
+            }
+            request.setAttribute("echeances", echeances);
+            request.setAttribute("restes", restes);
 
             request.getRequestDispatcher("/client/details-contrat.jsp")
                    .forward(request, response);

@@ -44,7 +44,7 @@ public class StatistiquesDAO {
 
             stats.setEcheancesImpayees(
                 compter(conn,
-                    "SELECT COUNT(*) FROM echeances WHERE statut = 'IMPAYEE'"));
+                        "SELECT COUNT(*) FROM echeances WHERE statut IN ('EN_ATTENTE', 'EN_RETARD') AND date_echeance < CURDATE()"));
 
             // Montant total des paiements
             String sqlPaiements =

@@ -254,6 +254,7 @@ td strong { color: #14233f; }
 
 .badge-effectue, .badge-payee { background: #e5f8ee; color: #16834b; }
 .badge-en_retard { background: #ffe8e8; color: #c03939; }
+.badge-annulee { background: #eceff3; color: #6b7280; }
 
 .resume { color: #8290a5; font-size: 13px; margin-bottom: 15px; }
 .resume strong { color: #14233f; }
@@ -393,12 +394,13 @@ td strong { color: #14233f; }
                                             <c:when test="${e.statut == 'PAYEE'}">Payée</c:when>
                                             <c:when test="${e.statut == 'EN_RETARD'}">En retard</c:when>
                                             <c:when test="${e.statut == 'EN_ATTENTE'}">À venir</c:when>
+                                            <c:when test="${e.statut == 'ANNULEE'}">Annulée</c:when>
                                             <c:otherwise><c:out value="${e.statut}"/></c:otherwise>
                                         </c:choose>
                                     </span>
                                 </td>
                                 <td>
-                                    <c:if test="${e.statut != 'PAYEE'}">
+                                    <c:if test="${e.statut != 'PAYEE' and e.statut != 'ANNULEE'}">
                                         <a class="btn btn-bleu btn-petit"
                                            href="${pageContext.request.contextPath}/agent/enregistrer-paiement?echeanceId=${e.id}">
                                             Enregistrer un paiement

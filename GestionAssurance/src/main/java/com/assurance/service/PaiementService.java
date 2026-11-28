@@ -88,6 +88,11 @@ public class PaiementService {
             throw new IllegalArgumentException("Cette échéance est déjà payée.");
         }
 
+        if (EcheanceService.STATUT_ANNULEE.equals(echeance.getStatut())) {
+            throw new IllegalArgumentException(
+                    "Cette échéance est annulée (contrat résilié).");
+        }
+
         verifierMontantEtMode(montant, modePaiement);
 
         BigDecimal montantArrondi = montant.setScale(2, RoundingMode.HALF_UP);

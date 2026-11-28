@@ -206,6 +206,7 @@ public class ContratService {
         contrat.setStatut("RESILIE");
 
         contratDAO.modifier(contrat);
+        new EcheanceService().annulerEcheancesFutures(contrat.getId());
     }
     public void suspendre(Long id) {
         Contrat contrat = contratDAO.trouverParId(id);
@@ -246,6 +247,7 @@ public class ContratService {
         contrat.setStatut("ACTIF");
 
         contratDAO.modifier(contrat);
+        new EcheanceService().genererSiAbsentes(contrat);
     }
     
 
@@ -264,6 +266,7 @@ public class ContratService {
 
     	contrat.setStatut("ACTIF");
     	contratDAO.modifier(contrat);
+    	new EcheanceService().genererSiAbsentes(contrat);
 }
     public void refuser(Long id) {
 

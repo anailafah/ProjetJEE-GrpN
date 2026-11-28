@@ -196,6 +196,12 @@
                 margin-top: 25px;
             }
         }
+        .echeances { width: 100%; border-collapse: collapse; font-size: 14px; }
+		.echeances th, .echeances td { padding: 12px; text-align: left; border-bottom: 1px solid #eef0f4; }
+		.echeances th { color: #64748b; font-size: 12px; text-transform: uppercase; }
+		.badge-payee { background: #dcfce7; color: #15803d; }
+		.badge-en_retard { background: #fee2e2; color: #b91c1c; }
+		.badge-annulee { background: #f1f5f9; color: #64748b; }
     </style>
 </head>
 
@@ -377,6 +383,39 @@
             </c:choose>
 
         </section>
+        <section class="card">
+    		<h2>Échéancier</h2>
+    		<c:choose>
+        	<c:when test="${not empty echeances}">
+            <table class="echeances">
+                <tr><th>Date</th><th>Montant</th><th>Reste à payer</th><th>Statut</th></tr>
+                <c:forEach var="e" items="${echeances}">
+                    <tr>
+                        <td>${e.dateEcheance}</td>
+                        <td>${e.montant} €</td>
+                        <td>${restes[e.id]} €</td>
+                        <td>
+                            <span class="badge badge-${e.statut.toLowerCase()}">
+                                <c:choose>
+                                    <c:when test="${e.statut == 'PAYEE'}">Payée</c:when>
+                                    <c:when test="${e.statut == 'EN_RETARD'}">En retard</c:when>
+                                    <c:when test="${e.statut == 'ANNULEE'}">Annulée</c:when>
+                                    <c:otherwise>À venir</c:otherwise>
+                                </c:choose>
+                            </span>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+            <p style="margin-top:15px;">
+                <a href="${pageContext.request.contextPath}/client/paiements">Voir l'historique de mes paiements →</a>
+            </p>
+        	</c:when>
+        <	c:otherwise>
+            <div class="vide"><p>L'échéancier sera disponible une fois le contrat activé.</p></div>
+        </c:otherwise>
+    </c:choose>
+</section>
 
     </c:if>
 
