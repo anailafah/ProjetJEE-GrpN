@@ -360,6 +360,10 @@ td strong { color: #14233f; }
        										href="${pageContext.request.contextPath}/agent/modifier-contrat?id=${contrat.id}">
        										 Modifier
     									</a>
+    									<a class="btn-modifier" style="background:#1769aa;"
+   											href="${pageContext.request.contextPath}/agent/echeances?contratId=${contrat.id}">
+    										Échéances
+										</a>
 
     								<c:if test="${contrat.statut == 'ACTIF' || contrat.statut == 'SUSPENDU'}">
         									<form action="${pageContext.request.contextPath}/agent/resilier-contrat"

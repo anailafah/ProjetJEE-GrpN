@@ -17,6 +17,8 @@ public class EcheanceService {
     public static final String STATUT_EN_ATTENTE = "EN_ATTENTE";
     public static final String STATUT_PAYEE = "PAYEE";
     public static final String STATUT_EN_RETARD = "EN_RETARD";
+    // Échéance future d'un contrat résilié : plus due, mais gardée pour l'historique
+    public static final String STATUT_ANNULEE = "ANNULEE";
 
     // Périodicité = nombre de mois entre deux échéances
     public static final int PERIODICITE_MENSUELLE = 1;
@@ -49,9 +51,11 @@ public class EcheanceService {
             throw new IllegalArgumentException("Contrat invalide.");
         }
 
-        if (echeanceDAO.compterParContrat(contrat.getId()) > 0) {
+        // On ne regarde que la période en cours du contrat : après un renouvellement
+        // (nouvelle date de début), un nouvel échéancier peut être généré.
+        if (echeanceDAO.compterParContratDepuis(contrat.getId(), contrat.getDateDebut()) > 0) {
             throw new IllegalArgumentException(
-                    "Des échéances existent déjà pour ce contrat.");
+                    "Des échéances existent déjà pour la période en cours de ce contrat.");
         }
 
         List<Echeance> echeances = calculerEcheances(contrat, periodiciteMois);
@@ -59,6 +63,17 @@ public class EcheanceService {
         echeanceDAO.ajouterTous(echeances);
 
         return echeances;
+    }
+
+    // Version tolérante, appelée automatiquement à l'activation et au renouvellement
+    // d'un contrat : ne fait rien si l'échéancier de la période existe déjà.
+    public List<Echeance> genererSiAbsentes(Contrat contrat) {
+
+        if (echeanceDAO.compterParContratDepuis(contrat.getId(), contrat.getDateDebut()) > 0) {
+            return List.of();
+        }
+
+        return genererEcheances(contrat);
     }
 
     // Calcul pur (sans accès à la base) : le montant du contrat est la prime totale
@@ -170,7 +185,21 @@ public class EcheanceService {
 
     // Échéances impayées dont la date est dépassée (en attente OU déjà en retard)
     public List<Echeance> detecterEcheancesImpayees() {
-        return echeanceDAO.listerImpayeesAvant(LocalDate.now(), STATUT_PAYEE);
+        return echeanceDAO.listerImpayeesAvant(LocalDate.now(),
+                List.of(STATUT_PAYEE, STATUT_ANNULEE));
+    }
+
+    // À appeler à la résiliation d'un contrat : les échéances à venir non payées
+    // passent ANNULEE. Les échéances déjà passées restent dues.
+    // Retourne le nombre d'échéances annulées.
+    public int annulerEcheancesFutures(Long contratId) {
+
+        if (contratId == null || contratId <= 0) {
+            throw new IllegalArgumentException("Identifiant de contrat invalide.");
+        }
+
+        return echeanceDAO.annulerFutures(contratId, LocalDate.now(),
+                STATUT_EN_ATTENTE, STATUT_ANNULEE);
     }
 
     // Passe en EN_RETARD toutes les échéances en attente dont la date est dépassée.

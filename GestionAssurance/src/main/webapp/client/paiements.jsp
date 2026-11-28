@@ -163,6 +163,7 @@
         .table-container table { min-width: 650px; }
         .badge-payee, .badge-effectue { background: #dcfce7; color: #15803d; }
         .badge-en_retard { background: #fee2e2; color: #b91c1c; }
+        .badge-annulee { background: #f1f5f9; color: #64748b; }
     </style>
 </head>
 
@@ -215,6 +216,7 @@
                                             <c:when test="${e.statut == 'PAYEE'}">Payée</c:when>
                                             <c:when test="${e.statut == 'EN_RETARD'}">En retard</c:when>
                                             <c:when test="${e.statut == 'EN_ATTENTE'}">À venir</c:when>
+                                            <c:when test="${e.statut == 'ANNULEE'}">Annulée</c:when>
                                             <c:otherwise><c:out value="${e.statut}"/></c:otherwise>
                                         </c:choose>
                                     </span>

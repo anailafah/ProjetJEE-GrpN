@@ -94,18 +94,64 @@ public class EcheanceDAO {
         }
     }
 
-    // Échéances dont la date est dépassée et qui ne sont pas encore payées
-    // (statutPaye est fourni par le service : le DAO ne connaît pas les règles métier).
-    public List<Echeance> listerImpayeesAvant(LocalDate date, String statutPaye) {
+    // Échéances dont la date est dépassée, sauf celles dont le statut est exclu
+    // (payées, annulées : la liste est fournie par le service, qui porte les règles métier).
+    public List<Echeance> listerImpayeesAvant(LocalDate date, List<String> statutsExclus) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
                 "SELECT e FROM Echeance e JOIN FETCH e.contrat "
-                + "WHERE e.statut <> :statutPaye AND e.dateEcheance < :date "
+                + "WHERE e.statut NOT IN (:exclus) AND e.dateEcheance < :date "
                 + "ORDER BY e.dateEcheance",
                 Echeance.class
-            ).setParameter("statutPaye", statutPaye)
+            ).setParameterList("exclus", statutsExclus)
              .setParameter("date", date)
              .list();
+        }
+    }
+
+    // Nombre d'échéances d'un contrat à partir d'une date (période en cours)
+    public long compterParContratDepuis(Long contratId, LocalDate depuis) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long total = session.createQuery(
+                "SELECT COUNT(e) FROM Echeance e "
+                + "WHERE e.contrat.id = :contratId AND e.dateEcheance >= :depuis",
+                Long.class
+            ).setParameter("contratId", contratId)
+             .setParameter("depuis", depuis)
+             .uniqueResult();
+
+            return total == null ? 0L : total;
+        }
+    }
+
+    // Change le statut des échéances d'un contrat à partir d'une date (résiliation)
+    public int annulerFutures(Long contratId, LocalDate apartir,
+            String statutActuel, String nouveauStatut) {
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            int modifiees = session.createMutationQuery(
+                "UPDATE Echeance e SET e.statut = :nouveau "
+                + "WHERE e.contrat.id = :contratId AND e.statut = :actuel "
+                + "AND e.dateEcheance >= :date"
+            ).setParameter("nouveau", nouveauStatut)
+             .setParameter("contratId", contratId)
+             .setParameter("actuel", statutActuel)
+             .setParameter("date", apartir)
+             .executeUpdate();
+
+            transaction.commit();
+
+            return modifiees;
+
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+
+            throw new RuntimeException("Erreur lors de l'annulation des échéances", e);
         }
     }
 
